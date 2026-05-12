@@ -1,0 +1,15 @@
+{
+  "name": "TrackItMX",
+  "short_name": "TrackItMX",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070504",
+  "theme_color": "#070504",
+  "icons": [
+    {
+      "src": "assets/trackitmx-mark.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

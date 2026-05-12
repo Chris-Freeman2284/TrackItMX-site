@@ -1,0 +1,30 @@
+<svg width="1800" height="640" viewBox="0 0 1800 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tmx-neon" x1="80" y1="120" x2="1720" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20F2A4"/>
+      <stop offset="1" stop-color="#00D4FF"/>
+    </linearGradient>
+    <linearGradient id="tmx-badge-bg" x1="0" y1="0" x2="420" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111824"/>
+      <stop offset="1" stop-color="#070B10"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="72" y="110" width="420" height="420" rx="94" fill="url(#tmx-badge-bg)"/>
+  <rect x="72.5" y="110.5" width="419" height="419" rx="93.5" stroke="#2A3342"/>
+
+  <path d="M126 440C192 360 253 288 334 224C366 200 405 178 440 164" stroke="url(#tmx-neon)" stroke-width="22" stroke-linecap="round"/>
+  <path d="M148 472C217 391 273 312 350 249C381 224 418 201 452 187" stroke="#101827" stroke-opacity="0.6" stroke-width="6" stroke-linecap="round"/>
+
+  <text x="130" y="376" fill="#F7FBFF" font-family="Arial Black, Montserrat, sans-serif" font-size="190" font-weight="900" letter-spacing="-8">MX</text>
+
+  <text x="560" y="290" fill="#F3F8FF" font-family="Arial Black, Montserrat, sans-serif" font-size="172" font-weight="900" letter-spacing="-4">TRACKIT</text>
+  <text x="1450" y="290" fill="url(#tmx-neon)" font-family="Arial Black, Montserrat, sans-serif" font-size="172" font-weight="900" letter-spacing="-6">MX</text>
+
+  <text x="564" y="390" fill="#95A5BA" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700" letter-spacing="4">RIDE TRUTH. DIALED FAST.</text>
+
+  <path d="M560 440H1720" stroke="#253246" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="560" cy="440" r="9" fill="#2FF4AA"/>
+  <circle cx="1720" cy="440" r="9" fill="#00D4FF"/>
+</svg>
+
