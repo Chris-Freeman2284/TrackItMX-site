@@ -5,6 +5,10 @@ const AUTH_STORAGE_KEY = "trackitmx_spectator_auth_v1";
 const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey || "").trim();
 const LEAFLET_CSS_URL = new URL("../../assets/vendor/leaflet/leaflet.css", import.meta.url).href;
 const LEAFLET_JS_URL = new URL("../../assets/vendor/leaflet/leaflet.js", import.meta.url).href;
+const TRAILS_URL = new URL("../../assets/trails/michigan_public_trails.json", import.meta.url).href;
+const DEFAULT_MAP_CENTER = [39.8283, -98.5795];
+const DEFAULT_MAP_ZOOM = 4;
+const FOLLOW_ZOOM_FLOOR = 15;
 
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
@@ -21,13 +25,17 @@ const els = {
   roomContextPill: document.getElementById("room-context-pill"),
   roomCodePill: document.getElementById("room-code-pill"),
   roomRefreshPill: document.getElementById("room-refresh-pill"),
+  followPill: document.getElementById("follow-pill"),
   statRiders: document.getElementById("stat-riders"),
   statLive: document.getElementById("stat-live"),
   statAttention: document.getElementById("stat-attention"),
   statRoomAge: document.getElementById("stat-room-age"),
   field: document.getElementById("spectator-field"),
   mapEmpty: document.getElementById("spectator-map-empty"),
-  ridersList: document.getElementById("spectator-riders-list")
+  ridersList: document.getElementById("spectator-riders-list"),
+  fitRiders: document.getElementById("fit-riders"),
+  clearFollow: document.getElementById("clear-follow"),
+  mapModeButtons: Array.from(document.querySelectorAll("[data-map-mode]"))
 };
 
 const state = {
@@ -37,9 +45,24 @@ const state = {
   shareCode: null,
   pollHandle: null,
   loading: false,
+  mapMode: "road",
   map: null,
   markerLayer: null,
   mapAssetsPromise: null,
+  trailDataPromise: null,
+  trailLayer: null,
+  trailLayers: [],
+  roadLayer: null,
+  hybridImageryLayer: null,
+  hybridLabelsLayer: null,
+  riderMarkers: new Map(),
+  latestRiders: [],
+  userHasControlledMap: false,
+  hasAutoFit: false,
+  hasCenteredFallback: false,
+  followedRiderId: null,
+  followedRiderName: "",
+  programmaticViewportUntil: 0,
   lastFittedRoomKey: null,
   lastRoomSnapshot: null
 };
@@ -72,6 +95,32 @@ function bootstrap() {
     leaveRoom();
   });
 
+  els.fitRiders?.addEventListener("click", () => {
+    fitCurrentRiders({ force: true, fromUser: true });
+  });
+
+  els.clearFollow?.addEventListener("click", () => {
+    clearFollowMode();
+  });
+
+  els.ridersList?.addEventListener("click", (event) => {
+    const button = event.target instanceof Element
+      ? event.target.closest("[data-follow-rider]")
+      : null;
+    if (!button) {
+      return;
+    }
+
+    focusRider(button.getAttribute("data-follow-rider"), { fromUser: true });
+  });
+
+  for (const button of els.mapModeButtons) {
+    button.addEventListener("click", () => {
+      const requestedMode = button.getAttribute("data-map-mode") || "road";
+      setMapMode(requestedMode);
+    });
+  }
+
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden && state.roomId) {
       void refreshRoom();
@@ -93,13 +142,14 @@ async function openRoom(rawCode) {
 
   if (!cleanedExact && !normalized) {
     hideLiveRoom();
-    setStatus("Enter a room code to open the spectator view.", "idle");
+    setStatus("Enter a room code to open the ride.", "idle");
     return;
   }
 
   stopPolling();
+  resetRoomViewState();
   hideLiveRoom();
-  setStatus("Connecting to TrackItMX live room…", "loading");
+  setStatus("Opening the live room…", "loading");
 
   try {
     const room = await resolveActiveRoom(cleanedExact || normalized);
@@ -114,13 +164,13 @@ async function openRoom(rawCode) {
     showLiveRoom();
     if (els.mapEmpty) {
       els.mapEmpty.hidden = false;
-      els.mapEmpty.textContent = "Loading live map…";
+      els.mapEmpty.textContent = "Loading the map.";
     }
     try {
       await ensureMapReady();
       if (els.mapEmpty) {
         els.mapEmpty.hidden = false;
-        els.mapEmpty.textContent = "Waiting for live rider positions…";
+        els.mapEmpty.textContent = "Waiting for live rider positions.";
       }
     } catch (mapError) {
       if (els.mapEmpty) {
@@ -228,8 +278,7 @@ function leaveRoom() {
   state.roomId = null;
   state.shareCode = null;
   state.loading = false;
-  state.lastFittedRoomKey = null;
-  state.lastRoomSnapshot = null;
+  resetRoomViewState();
 
   if (els.input) {
     els.input.value = "";
@@ -239,7 +288,26 @@ function leaveRoom() {
   hideLiveRoom();
   showEntry();
   window.scrollTo({ top: 0, behavior: "smooth" });
-  setStatus("Left the room. Enter a code to open another spectator view.", "idle");
+  setStatus("You left the room. Enter another code any time.", "idle");
+}
+
+function resetRoomViewState() {
+  state.lastFittedRoomKey = null;
+  state.lastRoomSnapshot = null;
+  state.latestRiders = [];
+  state.riderMarkers.clear();
+  state.userHasControlledMap = false;
+  state.hasAutoFit = false;
+  state.hasCenteredFallback = false;
+  state.followedRiderId = null;
+  state.followedRiderName = "";
+  state.programmaticViewportUntil = 0;
+
+  if (state.markerLayer) {
+    state.markerLayer.clearLayers();
+  }
+
+  updateFollowUi();
 }
 
 function syncUrl(code) {
@@ -291,13 +359,29 @@ async function ensureMapReady() {
     scrollWheelZoom: true
   });
 
-  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  state.map.createPane("trackitmxTrails");
+  state.map.getPane("trackitmxTrails").style.zIndex = "420";
+
+  state.roadLayer = window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(state.map);
+  });
+  state.hybridImageryLayer = window.L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Tiles &copy; Esri"
+  });
+  state.hybridLabelsLayer = window.L.tileLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: "Labels &copy; Esri"
+  });
 
   state.markerLayer = window.L.layerGroup().addTo(state.map);
-  state.map.setView([39.8283, -98.5795], 4);
+  state.map.on("dragstart", handleUserMapDrag);
+  state.map.on("zoomstart", handleUserMapZoom);
+
+  setMapMode(state.mapMode);
+  state.map.setView(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM);
+  void ensureTrailLayerReady();
   window.requestAnimationFrame(() => state.map?.invalidateSize());
 }
 
@@ -332,6 +416,178 @@ function loadLeafletAssets() {
     script.onerror = () => reject(new Error("Could not load the live map."));
     document.head.appendChild(script);
   });
+}
+
+async function ensureTrailLayerReady() {
+  if (!state.map || state.trailLayer) {
+    return;
+  }
+
+  if (!state.trailDataPromise) {
+    state.trailDataPromise = fetch(TRAILS_URL).then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Could not load trail context.");
+      }
+      return response.json();
+    });
+  }
+
+  const trailGeoJson = await state.trailDataPromise;
+  state.trailLayers = [];
+  state.trailLayer = window.L.geoJSON(trailGeoJson, {
+    pane: "trackitmxTrails",
+    style: (feature) => getTrailStyle(feature?.properties),
+    onEachFeature(feature, layer) {
+      state.trailLayers.push(layer);
+      layer.bindTooltip(escapeHtml(feature?.properties?.name || "TrackItMX trail"), {
+        sticky: true,
+        direction: "top",
+        opacity: 0.94
+      });
+    }
+  }).addTo(state.map);
+
+  updateTrailHighlight(state.lastRoomSnapshot);
+}
+
+function getTrailStyle(properties = {}, isActive = false) {
+  const category = typeof properties.category === "string" ? properties.category.trim().toLowerCase() : "mixed";
+  const colors = {
+    singletrack: "#7be6c2",
+    "single track": "#7be6c2",
+    atv: "#f0c37a",
+    forestroad: "#8db8ff",
+    "forest road": "#8db8ff",
+    mxtrack: "#ff9d7b",
+    "mx track": "#ff9d7b",
+    mixed: "#f2cb92",
+    unknown: "#d4ad7b"
+  };
+  const color = colors[category] || colors.mixed;
+
+  return {
+    color: isActive ? "#f7efe3" : color,
+    weight: isActive ? 5 : 3,
+    opacity: isActive ? 0.95 : 0.72
+  };
+}
+
+function updateTrailHighlight(room) {
+  if (!state.trailLayers.length) {
+    return;
+  }
+
+  const trailKeys = getRoomTrailKeys(room);
+
+  for (const layer of state.trailLayers) {
+    const properties = layer.feature?.properties || {};
+    const featureKeys = [
+      normalizeTrailKey(properties.slug),
+      normalizeTrailKey(properties.name)
+    ].filter(Boolean);
+    const isMatch = trailKeys.size > 0
+      && featureKeys.some((featureKey) => {
+        for (const trailKey of trailKeys) {
+          if (featureKey === trailKey || featureKey.includes(trailKey) || trailKey.includes(featureKey)) {
+            return true;
+          }
+        }
+        return false;
+      });
+
+    layer.setStyle(getTrailStyle(properties, isMatch));
+    if (isMatch) {
+      layer.bringToFront();
+    }
+  }
+}
+
+function getRoomTrailKeys(room) {
+  const keys = new Set();
+  if (!room) {
+    return keys;
+  }
+
+  const values = [room.trailName, room.trailID, room.trailId];
+  for (const value of values) {
+    const normalized = normalizeTrailKey(value);
+    if (normalized) {
+      keys.add(normalized);
+    }
+  }
+  return keys;
+}
+
+function normalizeTrailKey(value) {
+  return typeof value === "string"
+    ? value.trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+    : "";
+}
+
+function setMapMode(mode) {
+  state.mapMode = mode === "hybrid" ? "hybrid" : "road";
+
+  if (state.map) {
+    toggleLayer(state.roadLayer, state.mapMode === "road");
+    toggleLayer(state.hybridImageryLayer, state.mapMode === "hybrid");
+    toggleLayer(state.hybridLabelsLayer, state.mapMode === "hybrid");
+  }
+
+  updateMapModeButtons();
+}
+
+function updateMapModeButtons() {
+  for (const button of els.mapModeButtons) {
+    const active = button.getAttribute("data-map-mode") === state.mapMode;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  }
+}
+
+function toggleLayer(layer, shouldShow) {
+  if (!state.map || !layer) {
+    return;
+  }
+
+  const hasLayer = state.map.hasLayer(layer);
+  if (shouldShow && !hasLayer) {
+    layer.addTo(state.map);
+  } else if (!shouldShow && hasLayer) {
+    state.map.removeLayer(layer);
+  }
+}
+
+function handleUserMapDrag() {
+  if (isProgrammaticViewportChange()) {
+    return;
+  }
+
+  state.userHasControlledMap = true;
+  if (state.followedRiderId) {
+    clearFollowMode();
+  }
+}
+
+function handleUserMapZoom() {
+  if (isProgrammaticViewportChange()) {
+    return;
+  }
+
+  state.userHasControlledMap = true;
+}
+
+function isProgrammaticViewportChange() {
+  return state.programmaticViewportUntil > Date.now();
+}
+
+function runProgrammaticViewportChange(action, durationMs = 900) {
+  state.programmaticViewportUntil = Date.now() + durationMs;
+  action();
+  window.setTimeout(() => {
+    if (state.programmaticViewportUntil <= Date.now()) {
+      state.programmaticViewportUntil = 0;
+    }
+  }, durationMs + 120);
 }
 
 function hydrateAuth() {
@@ -563,9 +819,10 @@ function comparePresence(a, b) {
 
 function renderRoom(room, riders) {
   state.lastRoomSnapshot = room;
+  state.latestRiders = riders;
   const liveCount = riders.filter((rider) => rider.freshness === "live").length;
-  const weakCount = riders.filter((rider) => rider.freshness === "weak").length;
-  const fadingCount = riders.filter((rider) => rider.freshness === "last" || rider.freshness === "offline").length;
+  const recentCount = riders.filter((rider) => rider.freshness === "weak").length;
+  const lastKnownCount = riders.filter((rider) => rider.freshness === "last" || rider.freshness === "offline").length;
   const roomAge = getRoomAge(room);
   const displayTitle = (room.title || "").trim() || `Room ${room.shareCode || state.shareCode || room.id}`;
   const shareCode = room.shareCode || state.shareCode || room.id;
@@ -574,13 +831,13 @@ function renderRoom(room, riders) {
 
   els.roomTitle.textContent = displayTitle;
   const summaryBits = [
-    `${riders.length} rider${riders.length === 1 ? "" : "s"} visible`,
+    `${riders.length} rider${riders.length === 1 ? "" : "s"} on map`,
     `${liveCount} live`,
-    `${weakCount} weak`
+    `${recentCount} recent`
   ];
 
-  if (fadingCount > 0) {
-    summaryBits.push(`${fadingCount} fading`);
+  if (lastKnownCount > 0) {
+    summaryBits.push(`${lastKnownCount} last known`);
   }
 
   els.roomSummary.textContent = summaryBits.join(" · ");
@@ -601,32 +858,38 @@ function renderRoom(room, riders) {
     }
   }
   els.roomCodePill.textContent = `Code ${shareCode}`;
-  els.roomRefreshPill.textContent = roomAge == null ? "Waiting for updates" : `Room updated ${formatAge(roomAge)}`;
+  els.roomRefreshPill.textContent = roomAge == null ? "Waiting for updates" : `Updated ${formatAge(roomAge)}`;
 
   els.statRiders.textContent = String(riders.length);
   els.statLive.textContent = String(liveCount);
-  els.statAttention.textContent = String(fadingCount);
+  els.statAttention.textContent = String(lastKnownCount);
   els.statRoomAge.textContent = roomAge == null ? "--" : formatAge(roomAge);
 
+  updateTrailHighlight(room);
   renderField(riders);
   renderRiders(riders);
+  updateFollowUi();
 }
 
 function renderField(riders) {
   if (!state.map || !state.markerLayer) {
     if (els.mapEmpty) {
       els.mapEmpty.hidden = false;
-      els.mapEmpty.textContent = "Live map is still loading.";
+      els.mapEmpty.textContent = "Map is still loading.";
     }
     return;
   }
 
+  state.riderMarkers.clear();
   state.markerLayer.clearLayers();
 
   if (!riders.length) {
+    if (state.followedRiderId) {
+      clearFollowMode();
+    }
     if (els.mapEmpty) {
       els.mapEmpty.hidden = false;
-      els.mapEmpty.textContent = "No riders are publishing live data in this room yet.";
+      els.mapEmpty.textContent = "This room is open, but nobody is sharing a live position yet.";
     }
     centerMapOnRoomFallback();
     return;
@@ -653,15 +916,20 @@ function renderField(riders) {
         iconAnchor: [14, 14]
       })
     });
+    marker.on("click", () => {
+      focusRider(rider.id, { fromUser: true });
+      marker.openTooltip();
+    });
     marker.bindTooltip(buildMarkerTooltip(rider), {
       direction: "top",
       offset: [0, -18],
       opacity: 0.96
     });
     state.markerLayer.addLayer(marker);
+    state.riderMarkers.set(rider.id, marker);
   }
 
-  fitMapToRiders(bounds);
+  applyViewportForRiders(riders, bounds);
 }
 
 function renderRiders(riders) {
@@ -670,7 +938,7 @@ function renderRiders(riders) {
       <article class="support-card">
         <span class="label">No riders</span>
         <h3>Nothing live yet</h3>
-        <p>Rider cards will appear here once the room receives live presence updates.</p>
+        <p>Rider cards will appear here when the room starts sending live positions.</p>
       </article>
     `;
     return;
@@ -682,9 +950,10 @@ function renderRiders(riders) {
     if (typeof rider.ageSeconds === "number") meta.push(`<span>${escapeHtml(formatAge(rider.ageSeconds))}</span>`);
     meta.push(`<span>${escapeHtml(rider.movement)}</span>`);
     if (typeof rider.speedMph === "number") meta.push(`<span>${rider.speedMph} mph</span>`);
+    const isActive = rider.id === state.followedRiderId;
 
     return `
-      <article class="spectator-rider">
+      <article class="spectator-rider ${isActive ? "spectator-rider--active" : ""}">
         <div class="spectator-rider__header">
           <div>
             <p class="label">Presence</p>
@@ -696,9 +965,25 @@ function renderRiders(riders) {
           ${meta.map((item) => `<span class="spectator-meta-pill">${item}</span>`).join("")}
         </div>
         <p class="spectator-rider__note">${escapeHtml(getActionHint(rider))}</p>
+        <button class="button button--ghost spectator-rider__follow" type="button" data-follow-rider="${escapeHtml(rider.id)}">${isActive ? "Following rider" : "Follow rider"}</button>
       </article>
     `;
   }).join("");
+}
+
+function applyViewportForRiders(riders, bounds) {
+  if (state.followedRiderId) {
+    const followedRider = riders.find((rider) => rider.id === state.followedRiderId);
+    if (followedRider) {
+      centerMapOnRider(followedRider, { preserveZoom: true, animate: true });
+      return;
+    }
+    clearFollowMode();
+  }
+
+  if (!state.userHasControlledMap && !state.hasAutoFit) {
+    fitMapToRiders(bounds);
+  }
 }
 
 function fitMapToRiders(bounds) {
@@ -709,33 +994,142 @@ function fitMapToRiders(bounds) {
   const roomFitKey = `${state.roomId}:${bounds.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join("|")}`;
   if (bounds.length === 1) {
     const [lat, lon] = bounds[0];
-    state.map.setView([lat, lon], 15);
+    runProgrammaticViewportChange(() => {
+      state.map.setView([lat, lon], FOLLOW_ZOOM_FLOOR);
+    });
     state.lastFittedRoomKey = roomFitKey;
+    state.hasAutoFit = true;
     return;
   }
 
   const leafletBounds = window.L.latLngBounds(bounds);
-  state.map.fitBounds(leafletBounds.pad(0.18), {
-    padding: [28, 28],
-    maxZoom: 16,
-    animate: state.lastFittedRoomKey !== roomFitKey
+  runProgrammaticViewportChange(() => {
+    state.map.fitBounds(leafletBounds.pad(0.18), {
+      padding: [28, 28],
+      maxZoom: 16,
+      animate: state.lastFittedRoomKey !== roomFitKey
+    });
   });
   state.lastFittedRoomKey = roomFitKey;
+  state.hasAutoFit = true;
 }
 
 function centerMapOnRoomFallback() {
-  if (!state.map) {
+  if (!state.map || state.userHasControlledMap || state.hasCenteredFallback || state.followedRiderId) {
     return;
   }
 
   const lat = Number(state.lastRoomSnapshot?.lastPresenceLat);
   const lon = Number(state.lastRoomSnapshot?.lastPresenceLon);
   if (Number.isFinite(lat) && Number.isFinite(lon) && isValidCoordinate(lat, lon)) {
-    state.map.setView([lat, lon], 13);
+    runProgrammaticViewportChange(() => {
+      state.map.setView([lat, lon], 13);
+    });
+    state.hasCenteredFallback = true;
     return;
   }
 
-  state.map.setView([39.8283, -98.5795], 4);
+  runProgrammaticViewportChange(() => {
+    state.map.setView(DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM);
+  });
+  state.hasCenteredFallback = true;
+}
+
+function fitCurrentRiders({ force = false, fromUser = false } = {}) {
+  if (!state.map) {
+    return;
+  }
+
+  const bounds = state.latestRiders
+    .filter((rider) => isValidCoordinate(rider.lat, rider.lon))
+    .map((rider) => [rider.lat, rider.lon]);
+
+  if (!bounds.length) {
+    if (fromUser) {
+      state.userHasControlledMap = true;
+    }
+    centerMapOnRoomFallback();
+    return;
+  }
+
+  if (force) {
+    runProgrammaticViewportChange(() => {
+      if (bounds.length === 1) {
+        const [lat, lon] = bounds[0];
+        state.map.setView([lat, lon], Math.max(state.map.getZoom(), FOLLOW_ZOOM_FLOOR));
+      } else {
+        state.map.fitBounds(window.L.latLngBounds(bounds).pad(0.18), {
+          padding: [28, 28],
+          maxZoom: 16,
+          animate: true
+        });
+      }
+    });
+    if (fromUser) {
+      state.userHasControlledMap = true;
+    }
+    return;
+  }
+
+  fitMapToRiders(bounds);
+}
+
+function focusRider(riderId, { fromUser = false } = {}) {
+  const rider = state.latestRiders.find((entry) => entry.id === riderId);
+  if (!rider || !state.map) {
+    return;
+  }
+
+  state.followedRiderId = rider.id;
+  state.followedRiderName = rider.displayName;
+  if (fromUser) {
+    state.userHasControlledMap = true;
+  }
+
+  centerMapOnRider(rider, {
+    preserveZoom: false,
+    animate: true
+  });
+  renderRiders(state.latestRiders);
+  updateFollowUi();
+  state.riderMarkers.get(rider.id)?.openTooltip();
+}
+
+function centerMapOnRider(rider, { preserveZoom = true, animate = true } = {}) {
+  if (!state.map) {
+    return;
+  }
+
+  const currentZoom = state.map.getZoom();
+  const nextZoom = preserveZoom
+    ? currentZoom
+    : Math.max(currentZoom, FOLLOW_ZOOM_FLOOR);
+
+  runProgrammaticViewportChange(() => {
+    state.map.setView([rider.lat, rider.lon], nextZoom, { animate });
+  });
+}
+
+function clearFollowMode() {
+  state.followedRiderId = null;
+  state.followedRiderName = "";
+  renderRiders(state.latestRiders);
+  updateFollowUi();
+}
+
+function updateFollowUi() {
+  if (els.followPill) {
+    if (state.followedRiderId) {
+      els.followPill.hidden = false;
+      els.followPill.textContent = `Following ${state.followedRiderName}`;
+    } else {
+      els.followPill.hidden = true;
+    }
+  }
+
+  if (els.clearFollow) {
+    els.clearFollow.hidden = !state.followedRiderId;
+  }
 }
 
 function buildMarkerTooltip(rider) {
@@ -860,8 +1254,8 @@ function getFreshness(ageSeconds) {
 function getMovementLabel(speedMps, freshness) {
   if (typeof speedMps !== "number") {
     if (freshness === "offline") return "Offline";
-    if (freshness === "last") return "Last Known";
-    return "No Speed";
+    if (freshness === "last") return "Last known";
+    return "No speed yet";
   }
 
   if (speedMps < 0.8) return "Stopped";
@@ -881,8 +1275,8 @@ function getStatusLabel(crashState, freshness) {
   if (crashState === "confirmed") return "Alert";
   if (crashState === "suspected") return "Check";
   if (freshness === "live") return "Live";
-  if (freshness === "weak") return "Weak";
-  if (freshness === "last") return "Last";
+  if (freshness === "weak") return "Recent";
+  if (freshness === "last") return "Last known";
   if (freshness === "offline") return "Offline";
   return "Unknown";
 }
@@ -908,21 +1302,21 @@ function getBadgeTone(rider) {
 
 function getActionHint(rider) {
   if (rider.crashState === "confirmed") {
-    return `Keep ${rider.displayName} centered and treat this as an active alert until the room settles.`;
+    return `Keep ${rider.displayName} in view and treat this as the rider to watch right now.`;
   }
   if (rider.crashState === "suspected") {
-    return `Check ${rider.displayName} now and confirm whether this is a real down event or a false spike.`;
+    return `Keep an eye on ${rider.displayName} and watch for the next live update.`;
   }
   if (rider.freshness === "last") {
-    return "This rider is on a last-known position. Treat it as a breadcrumb until fresher updates return.";
+    return `Showing ${rider.displayName}'s last known spot until new updates come in.`;
   }
   if (rider.freshness === "offline") {
-    return "Signal freshness is slipping. Treat the last known position carefully until updates return.";
+    return `${rider.displayName} has not checked in for a bit, so this map is showing the last known spot.`;
   }
   if (typeof rider.speedMph !== "number") {
-    return "Location is coming through, but this rider is not publishing speed right now.";
+    return "Location is coming through. Speed is not available right now.";
   }
-  return "Signals look stable right now.";
+  return "Live position is updating normally.";
 }
 
 function formatAge(seconds) {

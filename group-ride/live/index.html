@@ -51,9 +51,9 @@
       <div class="spectator-entry__panel reveal">
         <div class="spectator-entry__copy">
           <p class="eyebrow">Spectator mode</p>
-          <h1>Open a live room.</h1>
+          <h1>Open the live ride.</h1>
           <p class="hero__lede">
-            Use a shared spectator link or enter the room code manually to open the live room map.
+            Paste a spectator link or enter the room code to watch the crew on the map.
           </p>
         </div>
         <form id="spectator-form" class="spectator-form" autocomplete="off">
@@ -69,9 +69,9 @@
               placeholder="Enter room code"
               aria-describedby="spectator-status"
             >
-            <button class="button button--primary" type="submit">Open Room</button>
-          </div>
-          <p id="spectator-status" class="spectator-status">Waiting for a room code.</p>
+              <button class="button button--primary" type="submit">Open Room</button>
+            </div>
+          <p id="spectator-status" class="spectator-status">Enter a room code to open the ride.</p>
         </form>
       </div>
     </section>
@@ -84,6 +84,7 @@
             <div class="spectator-room__meta">
               <span id="room-visibility-pill" class="spectator-pill" hidden>Public Room</span>
               <span id="room-context-pill" class="spectator-pill" hidden>Trail Context</span>
+              <span id="follow-pill" class="spectator-pill spectator-pill--follow" hidden>Following rider</span>
               <span id="room-code-pill" class="spectator-pill">Room</span>
               <span id="room-refresh-pill" class="spectator-pill">Refreshing</span>
             </div>
@@ -93,12 +94,18 @@
 
         <div class="spectator-map-stage__copy">
           <h1 id="room-title">TrackItMX Group Ride</h1>
-          <p id="room-summary" class="spectator-room__summary">Connecting to live room data.</p>
+          <p id="room-summary" class="spectator-room__summary">Opening the room.</p>
         </div>
 
         <div class="spectator-field__canvas spectator-field__canvas--hero spectator-field__canvas--stage">
+          <div class="spectator-map-toolbar" role="group" aria-label="Map controls">
+            <button class="button button--ghost spectator-map-toolbar__button is-active" type="button" data-map-mode="road" aria-pressed="true">Map</button>
+            <button class="button button--ghost spectator-map-toolbar__button" type="button" data-map-mode="hybrid" aria-pressed="false">Hybrid</button>
+            <button id="fit-riders" class="button button--ghost spectator-map-toolbar__button" type="button">Fit Riders</button>
+            <button id="clear-follow" class="button button--ghost spectator-map-toolbar__button" type="button" hidden>Free Map</button>
+          </div>
           <div id="spectator-field" class="spectator-map" aria-label="Live rider map"></div>
-          <div id="spectator-map-empty" class="spectator-field__empty">Live rider positions will appear here when room data loads.</div>
+          <div id="spectator-map-empty" class="spectator-field__empty">Loading the map.</div>
         </div>
       </section>
 
@@ -113,25 +120,25 @@
             <strong id="stat-live">0</strong>
           </article>
           <article class="spectator-stat spectator-stat--compact">
-            <span class="label">Fading</span>
+            <span class="label">Last known</span>
             <strong id="stat-attention">0</strong>
           </article>
           <article class="spectator-stat spectator-stat--compact">
-            <span class="label">Room ping</span>
+            <span class="label">Room update</span>
             <strong id="stat-room-age">--</strong>
           </article>
         </div>
 
         <section class="spectator-riders spectator-riders--dock" aria-label="Rider list">
           <div class="spectator-riders__heading">
-            <h2>Riders in room</h2>
-            <span class="spectator-field__hint">Freshest updates first</span>
+            <h2>Crew on map</h2>
+            <span class="spectator-field__hint">Tap a rider to follow</span>
           </div>
           <div id="spectator-riders-list" class="spectator-riders__list">
             <article class="support-card">
               <span class="label">Waiting</span>
-              <h3>No rider data yet</h3>
-              <p>Open a room code to start the live spectator view.</p>
+              <h3>No riders on the map yet</h3>
+              <p>Open a room code and live positions will appear here as the ride comes in.</p>
             </article>
           </div>
         </section>
