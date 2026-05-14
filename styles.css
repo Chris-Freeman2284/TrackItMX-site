@@ -737,23 +737,7 @@ p {
   min-height: 420px;
   border-radius: 28px;
   border: 1px solid rgba(212, 173, 123, 0.18);
-  background:
-    radial-gradient(circle at center, rgba(224, 166, 97, 0.1), transparent 42%),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.03) 0,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 72px
-    ),
-    repeating-linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.03) 0,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 72px
-    ),
-    #110b08;
+  background: #110b08;
   overflow: hidden;
 }
 
@@ -765,12 +749,36 @@ p {
   margin-top: 0;
 }
 
-.spectator-field__canvas::before {
-  content: "";
+.spectator-map {
   position: absolute;
-  inset: 10% 12%;
-  border: 1px dashed rgba(224, 166, 97, 0.14);
-  border-radius: 28px;
+  inset: 0;
+  z-index: 1;
+}
+
+.spectator-map .leaflet-control-zoom a,
+.spectator-map .leaflet-control-attribution {
+  background: rgba(12, 9, 8, 0.9);
+  color: var(--text-soft);
+  border-color: rgba(212, 173, 123, 0.2);
+}
+
+.spectator-map .leaflet-popup-content-wrapper,
+.spectator-map .leaflet-popup-tip {
+  background: rgba(12, 9, 8, 0.94);
+  color: var(--text);
+}
+
+.spectator-map .leaflet-tooltip {
+  border: 1px solid rgba(212, 173, 123, 0.22);
+  border-radius: 999px;
+  background: rgba(12, 9, 8, 0.92);
+  color: var(--text);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.spectator-map-marker-shell {
+  background: transparent;
+  border: 0;
 }
 
 .spectator-field__empty {
@@ -781,26 +789,29 @@ p {
   padding: 24px;
   color: var(--text-dim);
   text-align: center;
+  z-index: 450;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7, 5, 4, 0.08), rgba(7, 5, 4, 0.24));
 }
 
-.spectator-dot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
+.spectator-map-marker {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
+  transform: translate(-50%, -50%);
 }
 
-.spectator-dot__core {
-  width: 18px;
-  height: 18px;
+.spectator-map-marker__core {
+  width: 16px;
+  height: 16px;
   border-radius: 999px;
   border: 2px solid rgba(7, 5, 4, 0.82);
   background: var(--bone);
   box-shadow: 0 0 0 8px rgba(242, 226, 203, 0.08);
+  flex: 0 0 auto;
 }
 
-.spectator-dot__label {
+.spectator-map-marker__label {
   padding: 6px 10px;
   border-radius: 999px;
   background: rgba(7, 5, 4, 0.86);
@@ -808,27 +819,28 @@ p {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
 }
 
-.spectator-dot--live .spectator-dot__core {
+.spectator-map-marker--live .spectator-map-marker__core {
   background: #7be6c2;
 }
 
-.spectator-dot--weak .spectator-dot__core {
+.spectator-map-marker--weak .spectator-map-marker__core {
   background: #f4d17b;
 }
 
-.spectator-dot--warn .spectator-dot__core {
+.spectator-map-marker--warn .spectator-map-marker__core {
   background: #efb36a;
 }
 
-.spectator-dot--check .spectator-dot__core,
+.spectator-map-marker--check .spectator-map-marker__core,
 .spectator-badge--check {
   background: rgba(233, 173, 88, 0.18);
   color: #f4c27a;
 }
 
-.spectator-dot--alert .spectator-dot__core {
+.spectator-map-marker--alert .spectator-map-marker__core {
   background: #ff8070;
 }
 

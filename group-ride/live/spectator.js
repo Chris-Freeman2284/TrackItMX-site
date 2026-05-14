@@ -22,6 +22,7 @@ const els = {
   statAttention: document.getElementById("stat-attention"),
   statRoomAge: document.getElementById("stat-room-age"),
   field: document.getElementById("spectator-field"),
+  mapEmpty: document.getElementById("spectator-map-empty"),
   ridersList: document.getElementById("spectator-riders-list")
 };
 
@@ -31,7 +32,12 @@ const state = {
   roomId: null,
   shareCode: null,
   pollHandle: null,
-  loading: false
+  loading: false,
+  map: null,
+  markerLayer: null,
+  mapAssetsPromise: null,
+  lastFittedRoomKey: null,
+  lastRoomSnapshot: null
 };
 
 bootstrap();
@@ -101,9 +107,9 @@ async function openRoom(rawCode) {
     state.shareCode = room.shareCode || normalized || cleanedExact;
     syncUrl(state.shareCode);
 
+    showLiveRoom();
     await refreshRoom(room);
     schedulePoll();
-    showLiveRoom();
   } catch (error) {
     state.roomId = null;
     state.shareCode = null;
@@ -126,6 +132,16 @@ async function refreshRoom(seedRoom = null) {
     }
 
     const riders = await fetchPresence(room.id);
+    try {
+      await ensureMapReady();
+    } catch (mapError) {
+      if (els.mapEmpty) {
+        els.mapEmpty.hidden = false;
+        els.mapEmpty.textContent = mapError instanceof Error
+          ? mapError.message
+          : "Could not load the live map.";
+      }
+    }
     renderRoom(room, riders);
     setStatus(`Watching ${riders.length} rider${riders.length === 1 ? "" : "s"} in this room.`, "success");
     els.live.hidden = false;
@@ -172,6 +188,9 @@ function showLiveRoom() {
 
   document.body.classList.add("page--spectator-room-active");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  window.requestAnimationFrame(() => {
+    state.map?.invalidateSize();
+  });
 }
 
 function showEntry() {
@@ -187,6 +206,8 @@ function leaveRoom() {
   state.roomId = null;
   state.shareCode = null;
   state.loading = false;
+  state.lastFittedRoomKey = null;
+  state.lastRoomSnapshot = null;
 
   if (els.input) {
     els.input.value = "";
@@ -223,6 +244,72 @@ function setStatus(message, tone) {
 
   els.status.textContent = message;
   els.status.dataset.tone = tone;
+}
+
+async function ensureMapReady() {
+  if (!els.field) {
+    return;
+  }
+
+  if (!window.L) {
+    if (!state.mapAssetsPromise) {
+      state.mapAssetsPromise = loadLeafletAssets();
+    }
+    await state.mapAssetsPromise;
+  }
+
+  if (state.map) {
+    window.requestAnimationFrame(() => state.map?.invalidateSize());
+    return;
+  }
+
+  state.map = window.L.map(els.field, {
+    zoomControl: true,
+    attributionControl: true,
+    scrollWheelZoom: true
+  });
+
+  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(state.map);
+
+  state.markerLayer = window.L.layerGroup().addTo(state.map);
+  state.map.setView([39.8283, -98.5795], 4);
+  window.requestAnimationFrame(() => state.map?.invalidateSize());
+}
+
+function loadLeafletAssets() {
+  if (window.L) {
+    return Promise.resolve();
+  }
+
+  const cssId = "trackitmx-leaflet-css";
+  if (!document.getElementById(cssId)) {
+    const link = document.createElement("link");
+    link.id = cssId;
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    link.crossOrigin = "";
+    document.head.appendChild(link);
+  }
+
+  return new Promise((resolve, reject) => {
+    const existing = document.getElementById("trackitmx-leaflet-script");
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("Could not load the live map.")), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = "trackitmx-leaflet-script";
+    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    script.crossOrigin = "";
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Could not load the live map."));
+    document.head.appendChild(script);
+  });
 }
 
 function hydrateAuth() {
@@ -453,6 +540,7 @@ function comparePresence(a, b) {
 }
 
 function renderRoom(room, riders) {
+  state.lastRoomSnapshot = room;
   const liveCount = riders.filter((rider) => rider.freshness === "live").length;
   const weakCount = riders.filter((rider) => rider.freshness === "weak").length;
   const fadingCount = riders.filter((rider) => rider.freshness === "last" || rider.freshness === "offline").length;
@@ -485,26 +573,55 @@ function renderRoom(room, riders) {
 }
 
 function renderField(riders) {
-  els.field.innerHTML = "";
-
-  if (!riders.length) {
-    els.field.innerHTML = '<div class="spectator-field__empty">No riders are publishing live data in this room yet.</div>';
+  if (!state.map || !state.markerLayer) {
+    if (els.mapEmpty) {
+      els.mapEmpty.hidden = false;
+      els.mapEmpty.textContent = "Live map is still loading.";
+    }
     return;
   }
 
-  const points = projectRiders(riders);
+  state.markerLayer.clearLayers();
 
-  for (const rider of points) {
-    const dot = document.createElement("div");
-    dot.className = `spectator-dot spectator-dot--${rider.dotTone}`;
-    dot.style.left = `${rider.x}%`;
-    dot.style.top = `${rider.y}%`;
-    dot.innerHTML = `
-      <span class="spectator-dot__core"></span>
-      <span class="spectator-dot__label">${escapeHtml(rider.displayName)}</span>
-    `;
-    els.field.appendChild(dot);
+  if (!riders.length) {
+    if (els.mapEmpty) {
+      els.mapEmpty.hidden = false;
+      els.mapEmpty.textContent = "No riders are publishing live data in this room yet.";
+    }
+    centerMapOnRoomFallback();
+    return;
   }
+
+  if (els.mapEmpty) {
+    els.mapEmpty.hidden = true;
+  }
+
+  const bounds = [];
+
+  for (const rider of riders) {
+    bounds.push([rider.lat, rider.lon]);
+    const marker = window.L.marker([rider.lat, rider.lon], {
+      icon: window.L.divIcon({
+        className: "spectator-map-marker-shell",
+        html: `
+          <div class="spectator-map-marker spectator-map-marker--${getBadgeTone(rider)}">
+            <span class="spectator-map-marker__core"></span>
+            <span class="spectator-map-marker__label">${escapeHtml(rider.displayName)}</span>
+          </div>
+        `,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      })
+    });
+    marker.bindTooltip(buildMarkerTooltip(rider), {
+      direction: "top",
+      offset: [0, -18],
+      opacity: 0.96
+    });
+    state.markerLayer.addLayer(marker);
+  }
+
+  fitMapToRiders(bounds);
 }
 
 function renderRiders(riders) {
@@ -544,35 +661,52 @@ function renderRiders(riders) {
   }).join("");
 }
 
-function projectRiders(riders) {
-  if (riders.length === 1) {
-    return [{
-      ...riders[0],
-      x: 50,
-      y: 50,
-      dotTone: getBadgeTone(riders[0])
-    }];
+function fitMapToRiders(bounds) {
+  if (!state.map || !bounds.length) {
+    return;
   }
 
-  const lats = riders.map((rider) => rider.lat);
-  const lons = riders.map((rider) => rider.lon);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLon = Math.min(...lons);
-  const maxLon = Math.max(...lons);
-  const latSpan = Math.max(0.0002, maxLat - minLat);
-  const lonSpan = Math.max(0.0002, maxLon - minLon);
+  const roomFitKey = `${state.roomId}:${bounds.map(([lat, lon]) => `${lat.toFixed(5)},${lon.toFixed(5)}`).join("|")}`;
+  if (bounds.length === 1) {
+    const [lat, lon] = bounds[0];
+    state.map.setView([lat, lon], 15);
+    state.lastFittedRoomKey = roomFitKey;
+    return;
+  }
 
-  return riders.map((rider) => {
-    const x = 12 + (((rider.lon - minLon) / lonSpan) * 76);
-    const y = 12 + (((maxLat - rider.lat) / latSpan) * 76);
-    return {
-      ...rider,
-      x,
-      y,
-      dotTone: getBadgeTone(rider)
-    };
+  const leafletBounds = window.L.latLngBounds(bounds);
+  state.map.fitBounds(leafletBounds.pad(0.18), {
+    padding: [28, 28],
+    maxZoom: 16,
+    animate: state.lastFittedRoomKey !== roomFitKey
   });
+  state.lastFittedRoomKey = roomFitKey;
+}
+
+function centerMapOnRoomFallback() {
+  if (!state.map) {
+    return;
+  }
+
+  const lat = Number(state.lastRoomSnapshot?.lastPresenceLat);
+  const lon = Number(state.lastRoomSnapshot?.lastPresenceLon);
+  if (Number.isFinite(lat) && Number.isFinite(lon) && isValidCoordinate(lat, lon)) {
+    state.map.setView([lat, lon], 13);
+    return;
+  }
+
+  state.map.setView([39.8283, -98.5795], 4);
+}
+
+function buildMarkerTooltip(rider) {
+  const bits = [escapeHtml(rider.displayName), escapeHtml(rider.statusLabel)];
+  if (typeof rider.speedMph === "number") {
+    bits.push(`${rider.speedMph} mph`);
+  }
+  if (typeof rider.ageSeconds === "number") {
+    bits.push(formatAge(rider.ageSeconds));
+  }
+  return bits.join(" · ");
 }
 
 function getRequestedCode() {
