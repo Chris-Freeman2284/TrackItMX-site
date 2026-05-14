@@ -150,7 +150,6 @@ select {
 h1,
 h2,
 h3,
-.visual-card strong,
 .launch-card strong,
 .platform-card strong,
 .info-card strong,
@@ -218,6 +217,15 @@ h3,
 
 .page-hero {
   min-height: auto;
+}
+
+.page--home .hero {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.page--home .hero__copy {
+  max-width: 860px;
 }
 
 .page-hero__aside {
@@ -353,14 +361,6 @@ p {
   text-transform: uppercase;
 }
 
-.hero__visual {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  align-content: start;
-}
-
-.visual-card,
 .launch-card,
 .feature-card,
 .platform-card,
@@ -378,38 +378,6 @@ p {
   box-shadow: var(--shadow);
 }
 
-.visual-card {
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  padding: 24px;
-}
-
-.visual-card--hero {
-  grid-column: 1 / -1;
-  background:
-    radial-gradient(circle at top right, rgba(224, 166, 97, 0.18), transparent 36%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    var(--panel-strong);
-}
-
-.visual-list {
-  display: grid;
-  gap: 12px;
-  margin-top: 18px;
-  padding-left: 18px;
-  color: var(--text-soft);
-}
-
-.visual-list li::marker {
-  color: var(--copper-bright);
-}
-
-.visual-card--small {
-  min-height: 100%;
-  background: var(--panel-strong);
-}
-
-.visual-card strong,
 .launch-card strong,
 .platform-card strong,
 .info-card strong {
@@ -646,14 +614,6 @@ p {
   .resources,
   .signal-band {
     grid-template-columns: 1fr;
-  }
-
-  .hero__visual {
-    grid-template-columns: 1fr;
-  }
-
-  .visual-card--small {
-    min-height: auto;
   }
 
   .footer {
