@@ -1,8 +1,8 @@
-const API_KEY = "AIzaSyAGHTPCjUWfbHPaUVj5QnBYXSoczC2sHgA";
 const PROJECT_ID = "trackitmx-c5656";
 const POLL_MS = 5000;
 const STALE_ROOM_SECONDS = 600;
 const AUTH_STORAGE_KEY = "trackitmx_spectator_auth_v1";
+const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey || "").trim();
 
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
@@ -35,6 +35,19 @@ const state = {
 bootstrap();
 
 function bootstrap() {
+  if (!FIREBASE_WEB_API_KEY) {
+    if (els.input) {
+      els.input.disabled = true;
+      els.input.placeholder = "Spectator view is not configured";
+    }
+    const submitButton = els.form?.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+    setStatus("Spectator access is temporarily unavailable while site configuration is finishing.", "error");
+    return;
+  }
+
   hydrateAuth();
 
   els.form?.addEventListener("submit", (event) => {
@@ -192,7 +205,11 @@ async function ensureAnonymousToken(force = false) {
     return state.idToken;
   }
 
-  const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`, {
+  if (!FIREBASE_WEB_API_KEY) {
+    throw new Error("Spectator access is not configured.");
+  }
+
+  const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${encodeURIComponent(FIREBASE_WEB_API_KEY)}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

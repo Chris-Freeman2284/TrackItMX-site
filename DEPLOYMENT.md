@@ -20,6 +20,11 @@ This site is a plain static website, so it can be hosted on GitHub Pages, Cloudf
 - In GitHub, open `Settings` -> `Pages`.
 - Set the source to `GitHub Actions`.
 - The included workflow is manual by default, so you can run it from the `Actions` tab without affecting the simpler branch-based setup.
+- Add a GitHub Actions secret named `TRACKITMX_FIREBASE_WEB_API_KEY`.
+- Use a dedicated web-only Firebase API key for the spectator page rather than reusing the iPhone app key.
+- Restrict that web-only key to the `trackitmx.com` and `www.trackitmx.com` web origins you actually serve.
+- The workflow writes `runtime-config.js` during deploy, so the key is present in the published site but not committed to git.
+- Rotate or restrict the previously exposed Firebase key. GitHub or GitGuardian may keep warning until the old key is remediated, because it already exists in repo history.
 
 5. In GitHub Pages, set the custom domain to `trackitmx.com`.
 6. In your DNS provider, point the domain at GitHub Pages.
