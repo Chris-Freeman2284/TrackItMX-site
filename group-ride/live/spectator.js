@@ -1,8 +1,10 @@
 const PROJECT_ID = "trackitmx-c5656";
-const POLL_MS = 5000;
+const POLL_MS = 3500;
 const STALE_ROOM_SECONDS = 600;
 const AUTH_STORAGE_KEY = "trackitmx_spectator_auth_v1";
 const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey || "").trim();
+const LEAFLET_CSS_URL = new URL("../../assets/vendor/leaflet/leaflet.css", import.meta.url).href;
+const LEAFLET_JS_URL = new URL("../../assets/vendor/leaflet/leaflet.js", import.meta.url).href;
 
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
@@ -15,6 +17,8 @@ const els = {
   leaveRoom: document.getElementById("leave-room"),
   roomTitle: document.getElementById("room-title"),
   roomSummary: document.getElementById("room-summary"),
+  roomVisibilityPill: document.getElementById("room-visibility-pill"),
+  roomContextPill: document.getElementById("room-context-pill"),
   roomCodePill: document.getElementById("room-code-pill"),
   roomRefreshPill: document.getElementById("room-refresh-pill"),
   statRiders: document.getElementById("stat-riders"),
@@ -307,7 +311,7 @@ function loadLeafletAssets() {
     const link = document.createElement("link");
     link.id = cssId;
     link.rel = "stylesheet";
-    link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    link.href = LEAFLET_CSS_URL;
     link.crossOrigin = "";
     document.head.appendChild(link);
   }
@@ -322,7 +326,7 @@ function loadLeafletAssets() {
 
     const script = document.createElement("script");
     script.id = "trackitmx-leaflet-script";
-    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    script.src = LEAFLET_JS_URL;
     script.crossOrigin = "";
     script.onload = () => resolve();
     script.onerror = () => reject(new Error("Could not load the live map."));
@@ -565,6 +569,8 @@ function renderRoom(room, riders) {
   const roomAge = getRoomAge(room);
   const displayTitle = (room.title || "").trim() || `Room ${room.shareCode || state.shareCode || room.id}`;
   const shareCode = room.shareCode || state.shareCode || room.id;
+  const roomVisibility = getRoomVisibilityLabel(room);
+  const roomContext = getRoomContextLabel(room);
 
   els.roomTitle.textContent = displayTitle;
   const summaryBits = [
@@ -578,6 +584,22 @@ function renderRoom(room, riders) {
   }
 
   els.roomSummary.textContent = summaryBits.join(" · ");
+  if (els.roomVisibilityPill) {
+    if (roomVisibility) {
+      els.roomVisibilityPill.hidden = false;
+      els.roomVisibilityPill.textContent = roomVisibility;
+    } else {
+      els.roomVisibilityPill.hidden = true;
+    }
+  }
+  if (els.roomContextPill) {
+    if (roomContext) {
+      els.roomContextPill.hidden = false;
+      els.roomContextPill.textContent = roomContext;
+    } else {
+      els.roomContextPill.hidden = true;
+    }
+  }
   els.roomCodePill.textContent = `Code ${shareCode}`;
   els.roomRefreshPill.textContent = roomAge == null ? "Waiting for updates" : `Room updated ${formatAge(roomAge)}`;
 
@@ -725,6 +747,37 @@ function buildMarkerTooltip(rider) {
     bits.push(formatAge(rider.ageSeconds));
   }
   return bits.join(" · ");
+}
+
+function getRoomVisibilityLabel(room) {
+  const rawVisibility = typeof room.visibility === "string"
+    ? room.visibility.trim().toLowerCase()
+    : typeof room.spectatorVisibility === "string"
+      ? room.spectatorVisibility.trim().toLowerCase()
+      : null;
+
+  if (rawVisibility === "public") return "Public Room";
+  if (rawVisibility === "private") return "Private Room";
+  if (typeof room.isPublic === "boolean") return room.isPublic ? "Public Room" : "Private Room";
+  return null;
+}
+
+function getRoomContextLabel(room) {
+  const trailName = typeof room.trailName === "string" ? room.trailName.trim() : "";
+  if (trailName) {
+    return trailName;
+  }
+
+  const trailId = typeof room.trailID === "string"
+    ? room.trailID.trim()
+    : typeof room.trailId === "string"
+      ? room.trailId.trim()
+      : "";
+  if (trailId) {
+    return "Trail linked";
+  }
+
+  return null;
 }
 
 function getRequestedCode() {
