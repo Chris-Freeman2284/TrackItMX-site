@@ -77,14 +77,10 @@
     </section>
 
     <section id="spectator-live" class="spectator-live" hidden>
-      <div class="spectator-room-shell reveal">
-        <div class="spectator-roombar">
-          <div class="spectator-roombar__copy">
-            <p class="eyebrow">Live room</p>
-            <h1 id="room-title">TrackItMX Group Ride</h1>
-            <p id="room-summary" class="spectator-room__summary">Connecting to live room data.</p>
-          </div>
-          <div class="spectator-roombar__actions">
+      <section class="spectator-map-stage reveal" aria-label="Live room view">
+        <div class="spectator-map-stage__topline">
+          <a class="spectator-home-link" href="../../">TrackItMX</a>
+          <div class="spectator-map-stage__actions">
             <div class="spectator-room__meta">
               <span id="room-code-pill" class="spectator-pill">Room</span>
               <span id="room-refresh-pill" class="spectator-pill">Refreshing</span>
@@ -93,63 +89,50 @@
           </div>
         </div>
 
-        <div class="spectator-stage">
-          <section class="spectator-map-card" aria-label="Live room map">
-            <div class="spectator-field__header">
-              <div>
-                <p class="eyebrow">Live map</p>
-                <h2>Room view</h2>
-              </div>
-              <span class="spectator-field__hint">Relative rider positions</span>
-            </div>
-            <div id="spectator-field" class="spectator-field__canvas spectator-field__canvas--hero">
-              <div class="spectator-field__empty">Live rider positions will appear here when room data loads.</div>
-            </div>
-          </section>
-
-          <aside class="spectator-sidebar">
-            <div class="spectator-stat-grid spectator-stat-grid--stack">
-              <article class="spectator-stat">
-                <span class="label">Riders</span>
-                <strong id="stat-riders">0</strong>
-                <p>Total riders visible in this room.</p>
-              </article>
-              <article class="spectator-stat">
-                <span class="label">Live now</span>
-                <strong id="stat-live">0</strong>
-                <p>Riders publishing truly live positions right now.</p>
-              </article>
-              <article class="spectator-stat">
-                <span class="label">Fading</span>
-                <strong id="stat-attention">0</strong>
-                <p>Riders showing last-known or offline positions.</p>
-              </article>
-              <article class="spectator-stat">
-                <span class="label">Last room ping</span>
-                <strong id="stat-room-age">--</strong>
-                <p>Best available room-level heartbeat age.</p>
-              </article>
-            </div>
-
-            <section class="spectator-riders" aria-label="Rider list">
-              <div class="spectator-field__header">
-                <div>
-                  <p class="eyebrow">Riders</p>
-                  <h2>Live room details</h2>
-                </div>
-                <span class="spectator-field__hint">Sorted by freshness and active alerts</span>
-              </div>
-              <div id="spectator-riders-list" class="spectator-riders__list">
-                <article class="support-card">
-                  <span class="label">Waiting</span>
-                  <h3>No rider data yet</h3>
-                  <p>Open a room code to start the live spectator view.</p>
-                </article>
-              </div>
-            </section>
-          </aside>
+        <div class="spectator-map-stage__copy">
+          <h1 id="room-title">TrackItMX Group Ride</h1>
+          <p id="room-summary" class="spectator-room__summary">Connecting to live room data.</p>
         </div>
-      </div>
+
+        <div id="spectator-field" class="spectator-field__canvas spectator-field__canvas--hero spectator-field__canvas--stage">
+          <div class="spectator-field__empty">Live rider positions will appear here when room data loads.</div>
+        </div>
+      </section>
+
+      <section class="spectator-room-dock reveal" aria-label="Room details">
+        <div class="spectator-stat-grid spectator-stat-grid--dock">
+          <article class="spectator-stat spectator-stat--compact">
+            <span class="label">Riders</span>
+            <strong id="stat-riders">0</strong>
+          </article>
+          <article class="spectator-stat spectator-stat--compact">
+            <span class="label">Live now</span>
+            <strong id="stat-live">0</strong>
+          </article>
+          <article class="spectator-stat spectator-stat--compact">
+            <span class="label">Fading</span>
+            <strong id="stat-attention">0</strong>
+          </article>
+          <article class="spectator-stat spectator-stat--compact">
+            <span class="label">Room ping</span>
+            <strong id="stat-room-age">--</strong>
+          </article>
+        </div>
+
+        <section class="spectator-riders spectator-riders--dock" aria-label="Rider list">
+          <div class="spectator-riders__heading">
+            <h2>Riders in room</h2>
+            <span class="spectator-field__hint">Freshest updates first</span>
+          </div>
+          <div id="spectator-riders-list" class="spectator-riders__list">
+            <article class="support-card">
+              <span class="label">Waiting</span>
+              <h3>No rider data yet</h3>
+              <p>Open a room code to start the live spectator view.</p>
+            </article>
+          </div>
+        </section>
+      </section>
     </section>
   </main>
 </body>

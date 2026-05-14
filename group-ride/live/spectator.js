@@ -157,6 +157,8 @@ function hideLiveRoom() {
   if (els.live) {
     els.live.hidden = true;
   }
+
+  document.body.classList.remove("page--spectator-room-active");
 }
 
 function showLiveRoom() {
@@ -167,12 +169,17 @@ function showLiveRoom() {
   if (els.live) {
     els.live.hidden = false;
   }
+
+  document.body.classList.add("page--spectator-room-active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function showEntry() {
   if (els.entry) {
     els.entry.hidden = false;
   }
+
+  document.body.classList.remove("page--spectator-room-active");
 }
 
 function leaveRoom() {
@@ -188,6 +195,7 @@ function leaveRoom() {
   clearUrlCode();
   hideLiveRoom();
   showEntry();
+  window.scrollTo({ top: 0, behavior: "smooth" });
   setStatus("Left the room. Enter a code to open another spectator view.", "idle");
 }
 
