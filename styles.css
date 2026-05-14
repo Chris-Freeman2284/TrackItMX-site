@@ -322,6 +322,8 @@ p {
     background-color 180ms ease,
     color 180ms ease,
     box-shadow 180ms ease;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .button:hover,
@@ -391,6 +393,7 @@ p {
   margin-top: 10px;
   font-size: 1.18rem;
   line-height: 1.12;
+  overflow-wrap: anywhere;
 }
 
 .signal-band {
@@ -486,6 +489,14 @@ p {
 .policy-card p,
 .support-card p {
   margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.support-card h3,
+.resource-card h2,
+.policy-card h2,
+.faq-item summary {
+  overflow-wrap: anywhere;
 }
 
 .product-stack {
