@@ -108,6 +108,24 @@ async function openRoom(rawCode) {
     syncUrl(state.shareCode);
 
     showLiveRoom();
+    if (els.mapEmpty) {
+      els.mapEmpty.hidden = false;
+      els.mapEmpty.textContent = "Loading live map…";
+    }
+    try {
+      await ensureMapReady();
+      if (els.mapEmpty) {
+        els.mapEmpty.hidden = false;
+        els.mapEmpty.textContent = "Waiting for live rider positions…";
+      }
+    } catch (mapError) {
+      if (els.mapEmpty) {
+        els.mapEmpty.hidden = false;
+        els.mapEmpty.textContent = mapError instanceof Error
+          ? mapError.message
+          : "Could not load the live map.";
+      }
+    }
     await refreshRoom(room);
     schedulePoll();
   } catch (error) {
