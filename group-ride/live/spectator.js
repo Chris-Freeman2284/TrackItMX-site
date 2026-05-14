@@ -32,6 +32,7 @@ const els = {
   statRoomAge: document.getElementById("stat-room-age"),
   field: document.getElementById("spectator-field"),
   mapEmpty: document.getElementById("spectator-map-empty"),
+  mapNote: document.getElementById("spectator-map-note"),
   ridersList: document.getElementById("spectator-riders-list"),
   fitRiders: document.getElementById("fit-riders"),
   clearFollow: document.getElementById("clear-follow"),
@@ -48,6 +49,7 @@ const state = {
   mapMode: "road",
   map: null,
   markerLayer: null,
+  accuracyLayer: null,
   mapAssetsPromise: null,
   trailDataPromise: null,
   trailLayer: null,
@@ -306,6 +308,13 @@ function resetRoomViewState() {
   if (state.markerLayer) {
     state.markerLayer.clearLayers();
   }
+  if (state.accuracyLayer) {
+    state.accuracyLayer.clearLayers();
+  }
+  if (els.mapNote) {
+    els.mapNote.hidden = true;
+    els.mapNote.textContent = "";
+  }
 
   updateFollowUi();
 }
@@ -376,6 +385,7 @@ async function ensureMapReady() {
   });
 
   state.markerLayer = window.L.layerGroup().addTo(state.map);
+  state.accuracyLayer = window.L.layerGroup().addTo(state.map);
   state.map.on("dragstart", handleUserMapDrag);
   state.map.on("zoomstart", handleUserMapZoom);
 
@@ -788,17 +798,22 @@ function decoratePresence(presence) {
   const speedMps = typeof presence.speedMps === "number" && Number.isFinite(presence.speedMps)
     ? presence.speedMps
     : null;
+  const gpsAccuracyMeters = parseAccuracyMeters(presence.gpsAccuracyMeters);
   const movement = getMovementLabel(speedMps, freshness);
 
   return {
     ...presence,
     displayName: (presence.displayName || "Rider").trim() || "Rider",
     speedMps,
+    gpsAccuracyMeters,
     effectiveUpdatedAt,
     ageSeconds,
     freshness,
     crashState,
     movement,
+    sourceLabel: getSourceLabel(presence.liveSource, presence.publishPath),
+    accuracyLabel: getAccuracyLabel(gpsAccuracyMeters),
+    accuracyTone: getAccuracyTone(gpsAccuracyMeters),
     statusLabel: getStatusLabel(crashState, freshness),
     priorityRank: getPriorityRank(crashState, freshness),
     speedMph: typeof speedMps === "number" ? Math.round(speedMps * 2.23694) : null
@@ -823,6 +838,7 @@ function renderRoom(room, riders) {
   const liveCount = riders.filter((rider) => rider.freshness === "live").length;
   const recentCount = riders.filter((rider) => rider.freshness === "weak").length;
   const lastKnownCount = riders.filter((rider) => rider.freshness === "last" || rider.freshness === "offline").length;
+  const approximateCount = riders.filter((rider) => rider.accuracyTone === "rough" || rider.accuracyTone === "approx").length;
   const roomAge = getRoomAge(room);
   const displayTitle = (room.title || "").trim() || `Room ${room.shareCode || state.shareCode || room.id}`;
   const shareCode = room.shareCode || state.shareCode || room.id;
@@ -838,6 +854,9 @@ function renderRoom(room, riders) {
 
   if (lastKnownCount > 0) {
     summaryBits.push(`${lastKnownCount} last known`);
+  }
+  if (approximateCount > 0) {
+    summaryBits.push(`${approximateCount} approximate`);
   }
 
   els.roomSummary.textContent = summaryBits.join(" · ");
@@ -872,7 +891,7 @@ function renderRoom(room, riders) {
 }
 
 function renderField(riders) {
-  if (!state.map || !state.markerLayer) {
+  if (!state.map || !state.markerLayer || !state.accuracyLayer) {
     if (els.mapEmpty) {
       els.mapEmpty.hidden = false;
       els.mapEmpty.textContent = "Map is still loading.";
@@ -882,6 +901,7 @@ function renderField(riders) {
 
   state.riderMarkers.clear();
   state.markerLayer.clearLayers();
+  state.accuracyLayer.clearLayers();
 
   if (!riders.length) {
     if (state.followedRiderId) {
@@ -898,11 +918,13 @@ function renderField(riders) {
   if (els.mapEmpty) {
     els.mapEmpty.hidden = true;
   }
+  updateMapNote(riders);
 
   const bounds = [];
 
   for (const rider of riders) {
     bounds.push([rider.lat, rider.lon]);
+    addAccuracyRing(rider);
     const marker = window.L.marker([rider.lat, rider.lon], {
       icon: window.L.divIcon({
         className: "spectator-map-marker-shell",
@@ -924,6 +946,10 @@ function renderField(riders) {
       direction: "top",
       offset: [0, -18],
       opacity: 0.96
+    });
+    marker.bindPopup(buildMarkerPopup(rider), {
+      closeButton: false,
+      autoPanPadding: [22, 22]
     });
     state.markerLayer.addLayer(marker);
     state.riderMarkers.set(rider.id, marker);
@@ -950,6 +976,8 @@ function renderRiders(riders) {
     if (typeof rider.ageSeconds === "number") meta.push(`<span>${escapeHtml(formatAge(rider.ageSeconds))}</span>`);
     meta.push(`<span>${escapeHtml(rider.movement)}</span>`);
     if (typeof rider.speedMph === "number") meta.push(`<span>${rider.speedMph} mph</span>`);
+    if (rider.accuracyLabel) meta.push(`<span>${escapeHtml(rider.accuracyLabel)}</span>`);
+    if (rider.sourceLabel) meta.push(`<span>${escapeHtml(rider.sourceLabel)}</span>`);
     const isActive = rider.id === state.followedRiderId;
 
     return `
@@ -1141,10 +1169,73 @@ function buildMarkerTooltip(rider) {
   if (typeof rider.speedMph === "number") {
     bits.push(`${rider.speedMph} mph`);
   }
+  if (rider.accuracyLabel) {
+    bits.push(escapeHtml(rider.accuracyLabel));
+  }
   if (typeof rider.ageSeconds === "number") {
     bits.push(formatAge(rider.ageSeconds));
   }
   return bits.join(" · ");
+}
+
+function buildMarkerPopup(rider) {
+  const lines = [];
+  lines.push(`<strong>${escapeHtml(rider.displayName)}</strong>`);
+  lines.push(escapeHtml(rider.statusLabel));
+  if (rider.accuracyLabel) {
+    lines.push(escapeHtml(rider.accuracyLabel));
+  }
+  if (rider.sourceLabel) {
+    lines.push(escapeHtml(rider.sourceLabel));
+  }
+  if (typeof rider.speedMph === "number") {
+    lines.push(`${rider.speedMph} mph`);
+  }
+  return lines.join(" · ");
+}
+
+function addAccuracyRing(rider) {
+  if (!state.accuracyLayer || typeof rider.gpsAccuracyMeters !== "number") {
+    return;
+  }
+
+  const radius = clampAccuracyRingMeters(rider.gpsAccuracyMeters);
+  const style = getAccuracyRingStyle(rider.accuracyTone);
+
+  const ring = window.L.circle([rider.lat, rider.lon], {
+    radius,
+    color: style.stroke,
+    weight: 1.2,
+    opacity: style.strokeOpacity,
+    fillColor: style.fill,
+    fillOpacity: style.fillOpacity,
+    interactive: false
+  });
+  state.accuracyLayer.addLayer(ring);
+}
+
+function updateMapNote(riders) {
+  if (!els.mapNote) {
+    return;
+  }
+
+  const approximateCount = riders.filter((rider) => rider.accuracyTone === "rough" || rider.accuracyTone === "approx").length;
+  const phoneFallbackCount = riders.filter((rider) => rider.sourceLabel === "Phone fallback").length;
+
+  if (approximateCount > 0) {
+    els.mapNote.hidden = false;
+    els.mapNote.textContent = `${approximateCount} rider${approximateCount === 1 ? " is" : "s are"} on rough GPS right now, so dots can drift off the road or trail.`;
+    return;
+  }
+
+  if (phoneFallbackCount > 0) {
+    els.mapNote.hidden = false;
+    els.mapNote.textContent = `Some riders are coming through on phone fallback. The map is showing raw room GPS, not road snapping.`;
+    return;
+  }
+
+  els.mapNote.hidden = false;
+  els.mapNote.textContent = "Map view shows raw rider GPS from the room. It does not snap riders to roads or trails.";
 }
 
 function getRoomVisibilityLabel(room) {
@@ -1311,6 +1402,12 @@ function getActionHint(rider) {
   if (rider.crashState === "suspected") {
     return `Keep an eye on ${rider.displayName} and watch for the next live update.`;
   }
+  if (rider.accuracyTone === "approx") {
+    return `${rider.displayName}'s GPS is rough right now, so this marker is only an approximate spot.`;
+  }
+  if (rider.accuracyTone === "rough") {
+    return `${rider.displayName} is live, but the GPS fix is loose enough to drift off the road or trail.`;
+  }
   if (rider.freshness === "last") {
     return `Showing ${rider.displayName}'s last known spot until new updates come in.`;
   }
@@ -1330,6 +1427,98 @@ function formatAge(seconds) {
   if (minutes < 60) return `${minutes}m ago`;
   const hours = Math.round(minutes / 60);
   return `${hours}h ago`;
+}
+
+function parseAccuracyMeters(value) {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function getAccuracyTone(accuracyMeters) {
+  if (typeof accuracyMeters !== "number") {
+    return "unknown";
+  }
+  if (accuracyMeters <= 12) {
+    return "tight";
+  }
+  if (accuracyMeters <= 25) {
+    return "good";
+  }
+  if (accuracyMeters <= 45) {
+    return "rough";
+  }
+  return "approx";
+}
+
+function getAccuracyLabel(accuracyMeters) {
+  if (typeof accuracyMeters !== "number") {
+    return "";
+  }
+
+  const rounded = Math.round(accuracyMeters);
+  const tone = getAccuracyTone(accuracyMeters);
+  if (tone === "tight") return `${rounded}m GPS`;
+  if (tone === "good") return `${rounded}m GPS`;
+  if (tone === "rough") return `${rounded}m GPS rough`;
+  return `${rounded}m GPS approximate`;
+}
+
+function clampAccuracyRingMeters(accuracyMeters) {
+  return Math.max(8, Math.min(accuracyMeters, 120));
+}
+
+function getAccuracyRingStyle(tone) {
+  if (tone === "tight") {
+    return {
+      stroke: "rgba(123, 230, 194, 0.95)",
+      strokeOpacity: 0.92,
+      fill: "rgba(123, 230, 194, 0.22)",
+      fillOpacity: 0.18
+    };
+  }
+  if (tone === "good") {
+    return {
+      stroke: "rgba(244, 209, 123, 0.9)",
+      strokeOpacity: 0.86,
+      fill: "rgba(244, 209, 123, 0.18)",
+      fillOpacity: 0.14
+    };
+  }
+  if (tone === "rough") {
+    return {
+      stroke: "rgba(239, 179, 106, 0.88)",
+      strokeOpacity: 0.82,
+      fill: "rgba(239, 179, 106, 0.16)",
+      fillOpacity: 0.12
+    };
+  }
+  return {
+    stroke: "rgba(255, 128, 112, 0.84)",
+    strokeOpacity: 0.76,
+    fill: "rgba(255, 128, 112, 0.14)",
+    fillOpacity: 0.1
+  };
+}
+
+function getSourceLabel(liveSource, publishPath) {
+  const normalizedPath = typeof publishPath === "string" ? publishPath.trim() : "";
+  const normalizedSource = typeof liveSource === "string" ? liveSource.trim().toLowerCase() : "";
+
+  if (normalizedPath === "phoneFallback") {
+    return "Phone fallback";
+  }
+  if (normalizedPath === "watchBridge") {
+    return "Watch bridge";
+  }
+  if (normalizedPath === "phoneDirect") {
+    return "Phone source";
+  }
+  if (normalizedSource === "watch") {
+    return "Watch source";
+  }
+  if (normalizedSource === "phone") {
+    return "Phone source";
+  }
+  return "";
 }
 
 function escapeHtml(value) {
