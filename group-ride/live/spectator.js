@@ -112,13 +112,13 @@ async function refreshRoom(seedRoom = null) {
 
   try {
     const room = seedRoom ?? await fetchRoomById(state.roomId);
-    if (!room || !room.active || isRoomStale(room)) {
+    if (!room || !isRoomActive(room)) {
       throw new Error("This room is no longer active.");
     }
 
     const riders = await fetchPresence(room.id);
     renderRoom(room, riders);
-    setStatus(`Watching ${riders.length} rider${riders.length === 1 ? "" : "s"} live.`, "success");
+    setStatus(`Watching ${riders.length} rider${riders.length === 1 ? "" : "s"} in this room.`, "success");
     els.live.hidden = false;
   } catch (error) {
     setStatus(error instanceof Error ? error.message : "Live room refresh failed.", "error");
@@ -292,7 +292,7 @@ async function resolveActiveRoom(rawCode) {
     .map((row) => row.document)
     .filter(Boolean)
     .map(parseFirestoreDocument)
-    .filter((room) => room?.active && !isRoomStale(room));
+    .filter((room) => isRoomActive(room));
 
   return rooms[0] ?? null;
 }
@@ -326,7 +326,7 @@ async function fetchPresence(roomId) {
   const data = await response.json();
   return (data.documents ?? [])
     .map(parseFirestoreDocument)
-    .filter((presence) => presence?.lat != null && presence?.lon != null)
+    .filter(isRenderablePresence)
     .map((presence) => decoratePresence(presence))
     .sort(comparePresence);
 }
@@ -360,32 +360,27 @@ function unpackFirestoreValue(value) {
 }
 
 function decoratePresence(presence) {
-  const effectiveUpdatedAt = presence.updatedAt ?? millisToDate(presence.clientUpdatedAtMs) ?? null;
+  const effectiveUpdatedAt = getPresenceTimestamp(presence);
   const ageSeconds = effectiveUpdatedAt ? (Date.now() - effectiveUpdatedAt.getTime()) / 1000 : null;
   const freshness = getFreshness(ageSeconds);
-  const crashState = presence.crashState || "none";
-  const avgHeartRate = typeof presence.avgHeartRate === "number" ? presence.avgHeartRate : null;
-  const healthAge = presence.healthUpdatedAt instanceof Date ? (Date.now() - presence.healthUpdatedAt.getTime()) / 1000 : null;
-  const hasStaleHealth = healthAge != null && healthAge > 15;
-  const hasElevatedEffort = avgHeartRate != null && avgHeartRate >= 175;
-  const movement = getMovementLabel(presence.speedMps, freshness, presence.activityStatus);
+  const crashState = normalizeCrashState(presence.crashState);
+  const speedMps = typeof presence.speedMps === "number" && Number.isFinite(presence.speedMps)
+    ? presence.speedMps
+    : null;
+  const movement = getMovementLabel(speedMps, freshness);
 
   return {
     ...presence,
     displayName: (presence.displayName || "Rider").trim() || "Rider",
+    speedMps,
     effectiveUpdatedAt,
     ageSeconds,
     freshness,
     crashState,
-    avgHeartRate,
-    hasStaleHealth,
-    hasElevatedEffort,
-    hasAttention: crashState !== "none" || hasStaleHealth || hasElevatedEffort,
     movement,
-    statusLabel: getStatusLabel(crashState, hasStaleHealth, hasElevatedEffort, freshness),
-    priorityRank: getPriorityRank(crashState, hasStaleHealth, hasElevatedEffort, freshness, presence.activityStatus),
-    recordingLabel: typeof presence.isRecording === "boolean" ? (presence.isRecording ? "REC" : "IDLE") : null,
-    speedMph: typeof presence.speedMps === "number" ? Math.round(presence.speedMps * 2.23694) : null
+    statusLabel: getStatusLabel(crashState, freshness),
+    priorityRank: getPriorityRank(crashState, freshness),
+    speedMph: typeof speedMps === "number" ? Math.round(speedMps * 2.23694) : null
   };
 }
 
@@ -402,20 +397,31 @@ function comparePresence(a, b) {
 }
 
 function renderRoom(room, riders) {
-  const liveCount = riders.filter((rider) => rider.freshness === "live" || rider.freshness === "weak").length;
-  const attentionCount = riders.filter((rider) => rider.hasAttention).length;
+  const liveCount = riders.filter((rider) => rider.freshness === "live").length;
+  const weakCount = riders.filter((rider) => rider.freshness === "weak").length;
+  const fadingCount = riders.filter((rider) => rider.freshness === "last" || rider.freshness === "offline").length;
   const roomAge = getRoomAge(room);
   const displayTitle = (room.title || "").trim() || `Room ${room.shareCode || state.shareCode || room.id}`;
   const shareCode = room.shareCode || state.shareCode || room.id;
 
   els.roomTitle.textContent = displayTitle;
-  els.roomSummary.textContent = `${riders.length} rider${riders.length === 1 ? "" : "s"} visible · ${liveCount} live now · ${attentionCount} attention`;
+  const summaryBits = [
+    `${riders.length} rider${riders.length === 1 ? "" : "s"} visible`,
+    `${liveCount} live`,
+    `${weakCount} weak`
+  ];
+
+  if (fadingCount > 0) {
+    summaryBits.push(`${fadingCount} fading`);
+  }
+
+  els.roomSummary.textContent = summaryBits.join(" · ");
   els.roomCodePill.textContent = `Code ${shareCode}`;
   els.roomRefreshPill.textContent = roomAge == null ? "Waiting for updates" : `Room updated ${formatAge(roomAge)}`;
 
   els.statRiders.textContent = String(riders.length);
   els.statLive.textContent = String(liveCount);
-  els.statAttention.textContent = String(attentionCount);
+  els.statAttention.textContent = String(fadingCount);
   els.statRoomAge.textContent = roomAge == null ? "--" : formatAge(roomAge);
 
   renderField(riders);
@@ -459,18 +465,16 @@ function renderRiders(riders) {
 
   els.ridersList.innerHTML = riders.map((rider) => {
     const meta = [];
-    meta.push(`<span>${escapeHtml(rider.movement)}</span>`);
     meta.push(`<span>${escapeHtml(rider.statusLabel)}</span>`);
+    if (typeof rider.ageSeconds === "number") meta.push(`<span>${escapeHtml(formatAge(rider.ageSeconds))}</span>`);
+    meta.push(`<span>${escapeHtml(rider.movement)}</span>`);
     if (typeof rider.speedMph === "number") meta.push(`<span>${rider.speedMph} mph</span>`);
-    if (typeof rider.avgHeartRate === "number") meta.push(`<span>${Math.round(rider.avgHeartRate)} bpm</span>`);
-    if (rider.liveSource) meta.push(`<span>${escapeHtml(String(rider.liveSource).toUpperCase())}</span>`);
-    if (rider.recordingLabel) meta.push(`<span>${escapeHtml(rider.recordingLabel)}</span>`);
 
     return `
       <article class="spectator-rider">
         <div class="spectator-rider__header">
           <div>
-            <p class="label">${escapeHtml(rider.activityStatus || "riding")}</p>
+            <p class="label">Presence</p>
             <h3>${escapeHtml(rider.displayName)}</h3>
           </div>
           <span class="spectator-badge spectator-badge--${getBadgeTone(rider)}">${escapeHtml(rider.statusLabel)}</span>
@@ -527,12 +531,39 @@ function millisToDate(value) {
   return new Date(value);
 }
 
+function getPresenceTimestamp(presence) {
+  if (presence.updatedAt instanceof Date) {
+    return presence.updatedAt;
+  }
+
+  return millisToDate(presence.clientUpdatedAtMs) ?? null;
+}
+
+function isValidCoordinate(latitude, longitude) {
+  return Number.isFinite(latitude)
+    && Number.isFinite(longitude)
+    && Math.abs(latitude) <= 90
+    && Math.abs(longitude) <= 180;
+}
+
+function isRenderablePresence(presence) {
+  return presence
+    && typeof presence.displayName === "string"
+    && typeof presence.lat === "number"
+    && typeof presence.lon === "number"
+    && isValidCoordinate(presence.lat, presence.lon);
+}
+
 function getRoomAge(room) {
   const candidates = [];
   if (room.lastPresenceAt instanceof Date) candidates.push(room.lastPresenceAt.getTime());
   if (typeof room.lastPresenceClientAtMs === "number") candidates.push(room.lastPresenceClientAtMs);
   if (!candidates.length) return null;
   return Math.max(0, (Date.now() - Math.max(...candidates)) / 1000);
+}
+
+function isRoomActive(room) {
+  return Boolean(room) && room.active !== false && !isRoomStale(room);
 }
 
 function isRoomStale(room) {
@@ -548,11 +579,7 @@ function getFreshness(ageSeconds) {
   return "offline";
 }
 
-function getMovementLabel(speedMps, freshness, activityStatus) {
-  if (activityStatus === "pit") {
-    return "Pit";
-  }
-
+function getMovementLabel(speedMps, freshness) {
   if (typeof speedMps !== "number") {
     if (freshness === "offline") return "Offline";
     if (freshness === "last") return "Last Known";
@@ -564,11 +591,17 @@ function getMovementLabel(speedMps, freshness, activityStatus) {
   return "Moving";
 }
 
-function getStatusLabel(crashState, hasStaleHealth, hasElevatedEffort, freshness) {
+function normalizeCrashState(value) {
+  if (value === "confirmed" || value === "suspected") {
+    return value;
+  }
+
+  return "none";
+}
+
+function getStatusLabel(crashState, freshness) {
   if (crashState === "confirmed") return "Alert";
   if (crashState === "suspected") return "Check";
-  if (hasStaleHealth) return "Stale";
-  if (hasElevatedEffort) return "Effort";
   if (freshness === "live") return "Live";
   if (freshness === "weak") return "Weak";
   if (freshness === "last") return "Last";
@@ -576,24 +609,22 @@ function getStatusLabel(crashState, hasStaleHealth, hasElevatedEffort, freshness
   return "Unknown";
 }
 
-function getPriorityRank(crashState, hasStaleHealth, hasElevatedEffort, freshness, activityStatus) {
+function getPriorityRank(crashState, freshness) {
   if (crashState === "confirmed") return 0;
   if (crashState === "suspected") return 1;
-  if (hasStaleHealth) return 2;
-  if (hasElevatedEffort) return 3;
-  if (activityStatus === "pit") return 4;
-  if (freshness === "live") return 5;
-  if (freshness === "weak") return 6;
-  if (freshness === "last" || freshness === "offline") return 7;
-  return 8;
+  if (freshness === "live") return 2;
+  if (freshness === "weak") return 3;
+  if (freshness === "last") return 4;
+  if (freshness === "offline") return 5;
+  return 6;
 }
 
 function getBadgeTone(rider) {
   if (rider.crashState === "confirmed") return "alert";
   if (rider.crashState === "suspected") return "check";
-  if (rider.hasAttention) return "warn";
   if (rider.freshness === "live") return "live";
   if (rider.freshness === "weak") return "weak";
+  if (rider.freshness === "last") return "warn";
   return "idle";
 }
 
@@ -604,14 +635,14 @@ function getActionHint(rider) {
   if (rider.crashState === "suspected") {
     return `Check ${rider.displayName} now and confirm whether this is a real down event or a false spike.`;
   }
-  if (rider.hasStaleHealth) {
-    return "Biometric signal is stale. Use movement and live location as the safer truth for now.";
+  if (rider.freshness === "last") {
+    return "This rider is on a last-known position. Treat it as a breadcrumb until fresher updates return.";
   }
-  if (rider.hasElevatedEffort) {
-    return "Effort is elevated. This is a monitor condition, not an automatic emergency.";
-  }
-  if (rider.freshness === "last" || rider.freshness === "offline") {
+  if (rider.freshness === "offline") {
     return "Signal freshness is slipping. Treat the last known position carefully until updates return.";
+  }
+  if (typeof rider.speedMph !== "number") {
+    return "Location is coming through, but this rider is not publishing speed right now.";
   }
   return "Signals look stable right now.";
 }
