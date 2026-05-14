@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrackItMX | Off-Road Navigation, Ride Recording, and Ride Review</title>
+  <title>TrackItMX | Off-Road Ride Recording, Review, and Navigation</title>
   <meta
     name="description"
-    content="TrackItMX is an off-road rider app for trail navigation, trusted ride recording, group ride visibility, watch support, and real post-ride coaching."
+    content="TrackItMX helps off-road riders navigate to the trail, record rides, review sessions, remember setup context, and ride smarter with their crew."
   >
   <meta name="theme-color" content="#070504">
   <meta name="robots" content="index,follow">
-  <meta property="og:title" content="TrackItMX">
+  <meta property="og:title" content="TrackItMX | Off-Road Ride Recording, Review, and Navigation">
   <meta
     property="og:description"
-    content="Informational home for TrackItMX: product info, FAQs, support, privacy, and beta access."
+    content="TrackItMX helps off-road riders navigate to the trail, record rides, review sessions, remember setup context, and ride smarter with their crew."
   >
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://trackitmx.com/">
@@ -33,9 +33,10 @@
       "url": "https://trackitmx.com/",
       "supportUrl": "https://trackitmx.com/support/",
       "privacyPolicy": "https://trackitmx.com/privacy/",
-      "description": "TrackItMX is an off-road rider app for navigation, ride recording, group ride visibility, watch support, and real ride review."
+      "description": "TrackItMX helps off-road riders get to the trail, record the ride, review what happened, remember setup context, and ride better next time."
     }
   </script>
+  <script defer src="site-config.js"></script>
   <script defer src="app.js"></script>
   <script defer src="analytics-config.js"></script>
 </head>
@@ -46,250 +47,316 @@
       <img class="brand-lockup__mark" src="assets/trackitmx-mark.svg" alt="">
       <span class="brand-lockup__text">
         <strong>TrackIt<span>MX</span></strong>
-        <small>Ride. Track. Dominate.</small>
+        <small>Record. Review. Ride better.</small>
       </span>
     </a>
     <nav class="topnav" aria-label="Primary">
-      <a href="#product">Product</a>
+      <a href="#why">Why</a>
+      <a href="#ride-loop">Ride Loop</a>
+      <a href="#beta">Beta</a>
       <a href="#faq">FAQ</a>
       <a href="support/">Support</a>
       <a href="privacy/">Privacy</a>
     </nav>
-    <a class="button button--ghost" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer">Join TestFlight</a>
+    <a
+      class="button button--ghost"
+      href="https://testflight.apple.com/join/CxDbc7Bt"
+      target="_blank"
+      rel="noreferrer"
+      data-testflight-link
+    >Join the iPhone beta</a>
   </header>
 
   <main id="top">
     <section class="hero section">
       <div class="hero__copy reveal">
-        <p class="eyebrow">Off-road riding app</p>
-        <h1>Navigation, ride recording, and ride review that actually fit together.</h1>
+        <p class="eyebrow">Off-road ride recording, review, and navigation</p>
+        <h1>Record every ride. Review what mattered. Ride better next time.</h1>
         <p class="hero__lede">
-          TrackItMX gives riders one place to get to the trail, record the day, review the ride,
-          and stay connected with their crew.
+          TrackItMX gives off-road riders one place to get to the trail, capture the ride,
+          understand the session, and stay connected with their crew.
         </p>
         <div class="hero__actions">
-          <a class="button button--primary" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer">
-            Download Beta
-          </a>
-          <a class="button button--secondary" href="support/">Open Support</a>
-          <a class="button button--secondary" href="privacy/">Read Privacy</a>
+          <a
+            class="button button--primary"
+            href="https://testflight.apple.com/join/CxDbc7Bt"
+            target="_blank"
+            rel="noreferrer"
+            data-testflight-link
+          >Join the iPhone beta</a>
+          <a class="button button--secondary" href="#beta">See what we&rsquo;re testing</a>
         </div>
-        <p class="hero__note">Available now through Apple TestFlight for iPhone beta testers.</p>
-        <div class="chip-row" aria-label="TrackItMX feature highlights">
-          <span>Offline trail maps</span>
-          <span>Trusted ride recording</span>
-          <span>Watch companion</span>
-          <span>CarPlay beta</span>
-          <span>Group ride visibility</span>
-          <span>Real coaching</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="signal-band reveal" aria-label="TrackItMX core loop">
-      <p>Find the trail.</p>
-      <p>Record the ride.</p>
-      <p>Review the session.</p>
-      <p>Ride again smarter.</p>
-    </section>
-
-    <section class="section section--tight beta-spotlight">
-      <div class="beta-spotlight__panel reveal">
-        <p class="eyebrow">Now testing</p>
-        <h2>Join the TrackItMX beta on TestFlight.</h2>
-        <p>
-          Install the current iPhone beta directly through Apple TestFlight and send feedback as you ride.
+        <p class="hero__note">
+          Available now through Apple TestFlight for iPhone beta testers. Apple Watch companion flows and CarPlay
+          navigation are in active beta work.
         </p>
-        <div class="hero__actions hero__actions--compact">
-          <a class="button button--primary" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer">
-            Open TestFlight
-          </a>
-          <a class="button button--ghost" href="mailto:trackitmx.beta@gmail.com?subject=TrackItMX%20Beta%20Feedback">
-            Send Beta Feedback
-          </a>
+        <div class="chip-row" aria-label="TrackItMX feature highlights">
+          <span>Trail-first navigation</span>
+          <span>Trusted ride recording</span>
+          <span>Post-ride review</span>
+          <span>Group ride visibility</span>
+          <span>Apple Watch companion</span>
+          <span>CarPlay beta</span>
+          <span>Garage and setup memory</span>
         </div>
-        <p class="beta-spotlight__note">Public TestFlight link. Apple ID and TestFlight app may be required.</p>
       </div>
     </section>
 
-    <section id="product" class="section">
+    <section id="why" class="section">
       <div class="section-heading reveal">
-        <p class="eyebrow">Product info</p>
-        <h2>What TrackItMX does.</h2>
+        <p class="eyebrow">Why TrackItMX</p>
+        <h2>Not just another trail map. A memory bank for your rides.</h2>
         <p>
-          TrackItMX is built for off-road riders who care about navigation, reliable ride capture,
-          and useful post-ride feedback.
+          Most apps help you find a trail. TrackItMX is being built for what happens before, during,
+          and after the ride: planning the route, recording the session, reviewing what happened,
+          remembering bike setup, and improving the next time out.
         </p>
       </div>
       <div class="feature-grid">
         <article class="feature-card reveal">
-          <span class="feature-card__tag">Nav</span>
-          <h3>Premium trail-first navigation</h3>
-          <p>
-            Trail lookup, routing, and map behavior designed around riding, not city driving.
-          </p>
-        </article>
-        <article class="feature-card reveal">
           <span class="feature-card__tag">Record</span>
-          <h3>Ride capture riders can trust</h3>
+          <h3>Ride recording you can trust</h3>
           <p>
-            Stable ride saves and background resilience with ride integrity treated as the priority.
+            Start the ride, keep moving, and save the session with reliability treated as the core feature,
+            not an afterthought.
           </p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Review</span>
-          <h3>Coaching that explains itself</h3>
+          <h3>Review that explains the ride</h3>
           <p>
-            Feedback built around corner setup, traction, drive, and consistency.
-          </p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-card__tag">Live</span>
-          <h3>Group rides with one clear rider signal</h3>
-          <p>
-            Create or join rooms, see live riders, and share spectator links that open from any device.
-          </p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-card__tag">Watch</span>
-          <h3>Apple Watch companion support</h3>
-          <p>
-            Use the watch as a companion and optional live source while beta work continues.
+            Turn ride data into useful takeaways around pace, consistency, corner setup, traction, drive,
+            and session flow.
           </p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Garage</span>
-          <h3>Bike memory, setup context, and premium depth</h3>
+          <h3>Garage memory</h3>
           <p>
-            Setup history, ride memory, cloud backup, comparisons, and progress over time.
+            Keep bike setup, ride history, and session context tied together so the app remembers more than
+            a route line on a map.
           </p>
         </article>
+        <article class="feature-card reveal">
+          <span class="feature-card__tag">Crew</span>
+          <h3>Crew visibility</h3>
+          <p>
+            Create or join group ride rooms, see live rider presence when connected, and keep the crew signal simple.
+          </p>
+        </article>
+        <article class="feature-card reveal">
+          <span class="feature-card__tag">Apple</span>
+          <h3>Built around the Apple ride stack</h3>
+          <p>
+            iPhone is the core experience, with Apple Watch companion support and CarPlay navigation in active beta work.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="ride-loop" class="section section--tight">
+      <div class="section-heading reveal">
+        <p class="eyebrow">The ride loop</p>
+        <h2>The ride loop, finally in one place.</h2>
+      </div>
+      <div class="loop-grid">
+        <article class="loop-card reveal">
+          <span class="label">Step 1</span>
+          <h3>Find the trail.</h3>
+          <p>Trail lookup, routing, and map behavior designed around off-road riding instead of city driving.</p>
+        </article>
+        <article class="loop-card reveal">
+          <span class="label">Step 2</span>
+          <h3>Record the ride.</h3>
+          <p>Capture the session from start to finish, including route, timing, movement, and ride events when permissions allow.</p>
+        </article>
+        <article class="loop-card reveal">
+          <span class="label">Step 3</span>
+          <h3>Review what happened.</h3>
+          <p>See the ride as more than a saved line. TrackItMX turns the session into takeaways you can actually use.</p>
+        </article>
+        <article class="loop-card reveal">
+          <span class="label">Step 4</span>
+          <h3>Ride again smarter.</h3>
+          <p>Carry ride memory, setup context, and progress forward instead of starting from zero every time.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="beta" class="section section--tight beta-spotlight">
+      <div class="beta-spotlight__panel reveal">
+        <p class="eyebrow">Beta access</p>
+        <h2>Help shape the beta.</h2>
+        <p>
+          TrackItMX is in active iPhone beta. The current focus is recording accuracy, ride saving, group ride
+          syncing, Watch companion behavior, and anything that feels confusing in real riding conditions.
+        </p>
+        <div class="hero__actions hero__actions--compact">
+          <a
+            class="button button--primary"
+            href="https://testflight.apple.com/join/CxDbc7Bt"
+            target="_blank"
+            rel="noreferrer"
+            data-testflight-link
+          >Open TestFlight</a>
+          <a
+            class="button button--ghost"
+            href="mailto:support@trackitmx.com?subject=TrackItMX%20Beta%20Feedback"
+            data-support-link
+            data-mail-subject="TrackItMX Beta Feedback"
+          >Send beta feedback</a>
+        </div>
+        <p class="beta-spotlight__note">
+          Ride it, test it, try to break it. Send what happened, what device you used, whether Watch or CarPlay
+          was involved, and what you expected instead.
+        </p>
       </div>
     </section>
 
     <section class="section product-stack">
       <div class="product-stack__copy reveal">
         <p class="eyebrow">Platforms</p>
-        <h2>Built around iPhone, Apple Watch, and CarPlay.</h2>
+        <h2>Built for the current Apple beta stack, with Android planned next.</h2>
         <p>
-          The core experience is on iPhone, with Apple Watch companion flows and CarPlay
-          navigation in active beta work. Android is planned after the current iPhone foundation
-          is locked in.
+          iPhone is the main experience today. Watch companion flows, CarPlay navigation, and spectator links are
+          part of the current beta path. Android is planned after the iPhone foundation is stable enough to expand well.
         </p>
       </div>
       <div class="platform-grid">
         <article class="platform-card reveal">
           <span class="label">iPhone</span>
-          <strong>Main app experience</strong>
-          <p>Trail discovery, routing, ride recording, ride review, garage, and support surfaces.</p>
+          <strong>Main beta experience</strong>
+          <p>Trail lookup, ride recording, ride review, group ride, and support live here first.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">Apple Watch</span>
-          <strong>Companion + backup capture</strong>
-          <p>Optional companion telemetry, health signals if enabled, and live-source support.</p>
+          <strong>Companion support</strong>
+          <p>Optional companion capture and health-related ride context when riders explicitly grant permission.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">CarPlay</span>
-          <strong>Navigation beta</strong>
-          <p>Rider-friendly navigation for getting to the trail and staying oriented on the way.</p>
+          <strong>Navigation in beta</strong>
+          <p>CarPlay work is focused on making the trail approach and route handoff feel cleaner and more useful.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">Android</span>
-          <strong>Planned next</strong>
-          <p>Android is on the roadmap once the iPhone and current beta foundation are locked in.</p>
+          <strong>Planned after beta stabilizes</strong>
+          <p>Android is coming later, once the iPhone beta is strong enough to expand without dragging core quality down.</p>
         </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="trust-panel reveal">
+        <div class="trust-panel__copy">
+          <p class="eyebrow">Trust and safety</p>
+          <h2>Your ride data should work for you, not become a spam funnel.</h2>
+          <p>
+            TrackItMX may handle sensitive ride information like location, route traces, telemetry, group ride presence,
+            and optional Watch or health-related signals. The beta should make those choices clear, permission-based,
+            and easy to question.
+          </p>
+        </div>
+        <div class="trust-panel__details">
+          <ul class="bullet-list trust-list">
+            <li>Location and telemetry are used to power navigation, recording, review, and group ride features.</li>
+            <li>Watch and health-related signals are optional and permission-based.</li>
+            <li>Cloud-backed features such as group rooms, sharing, restore, and backup may require network access.</li>
+            <li>TrackItMX is not emergency rescue infrastructure. In a real emergency, use local emergency services.</li>
+          </ul>
+          <a class="button button--secondary" href="privacy/">Read the privacy policy</a>
+        </div>
       </div>
     </section>
 
     <section id="faq" class="section">
       <div class="section-heading reveal">
         <p class="eyebrow">FAQ</p>
-        <h2>Quick answers.</h2>
+        <h2>Quick answers before you ride.</h2>
       </div>
       <div class="faq-list">
         <details class="faq-item reveal">
           <summary>Is TrackItMX on the App Store yet?</summary>
-          <p>
-            Not yet. TrackItMX is still in active beta. Use the beta email for access or launch updates.
-          </p>
+          <p>Not yet. TrackItMX is currently available through Apple TestFlight for iPhone beta testers.</p>
         </details>
         <details class="faq-item reveal">
-          <summary>Do I need an account to use TrackItMX?</summary>
+          <summary>What makes TrackItMX different?</summary>
           <p>
-            The product direction is local-first. Some cloud features may use anonymous or optional account layers,
-            but the goal is not to force signup before the app proves value.
+            TrackItMX is focused on the whole ride loop: get to the trail, record the session, review what happened,
+            remember setup context, and improve next time. Navigation matters, but the long-term product is ride memory
+            and ride review for off-road riders.
           </p>
         </details>
         <details class="faq-item reveal">
           <summary>Does TrackItMX work without cell service?</summary>
           <p>
-            Some navigation and ride flows are built for low-service environments. Cloud-backed features still need network access.
+            Core navigation and recording flows are being built with low-service riding in mind. Cloud-backed features
+            like live group rooms, sharing, backup, restore, and some syncing still need network access.
           </p>
         </details>
         <details class="faq-item reveal">
-          <summary>What does the app actually track?</summary>
+          <summary>What does TrackItMX track?</summary>
           <p>
-            Depending on the features you use, TrackItMX may handle location, ride telemetry, saved ride details,
-            optional watch or health signals, group ride presence, and basic usage analytics. The privacy page covers the current beta scope.
+            Depending on the features and permissions you use, TrackItMX may handle location, route traces, ride telemetry,
+            timestamps, speed, distance, group ride presence, optional Watch or health-related signals, app reliability
+            analytics, and support messages.
           </p>
         </details>
         <details class="faq-item reveal">
-          <summary>How do ride tracking, coaching, and mechanic features work?</summary>
-          <p>
-            TrackItMX starts with the real ride data you allow the app to capture, such as location, timing,
-            movement, and ride events. From there, we use a mix of product logic and AI-assisted analysis to
-            turn that data into coaching takeaways, ride summaries, and garage or mechanic-style suggestions.
-            The goal is useful guidance grounded in the ride itself, not made-up stats or black-box hype.
-          </p>
-        </details>
-        <details class="faq-item reveal">
-          <summary>How do I get help or report a bug?</summary>
-          <p>
-            Email <a href="mailto:trackitmx.beta@gmail.com?subject=TrackItMX%20Support">trackitmx.beta@gmail.com</a>
-            or open the support page for troubleshooting and help.
-          </p>
+          <summary>Is TrackItMX for emergencies?</summary>
+          <p>No. TrackItMX is a ride app, not emergency rescue infrastructure. In a real-world emergency, contact local emergency services.</p>
         </details>
         <details class="faq-item reveal">
           <summary>Is Android coming?</summary>
-          <p>
-            Yes. Android is planned after the current iPhone beta foundation is locked in and the core product
-            feels stable enough to expand well.
-          </p>
+          <p>Android is planned after the iPhone beta foundation is stable enough to expand well.</p>
         </details>
       </div>
     </section>
 
-    <section class="section resources">
+    <section class="section resources resources--triple">
       <div class="resource-card reveal">
         <p class="eyebrow">Support</p>
-        <h2>Need help?</h2>
-        <p>
-          Send riders, testers, or reviewers to the support page for FAQs, setup help, and contact info.
-        </p>
-        <a class="button button--secondary" href="support/">Go To Support</a>
+        <h2>Need install help or a human answer?</h2>
+        <p>Use the support page for beta help, ride troubleshooting, bug reports, and product questions.</p>
+        <a class="button button--secondary" href="support/">Open Support</a>
       </div>
       <div class="resource-card resource-card--accent reveal">
         <p class="eyebrow">Privacy</p>
-        <h2>Need the privacy policy?</h2>
-        <p>
-          The privacy page covers location, telemetry, cloud backup, group ride, analytics,
-          optional health data, and privacy requests.
-        </p>
-        <a class="button button--secondary" href="privacy/">Go To Privacy</a>
+        <h2>Want the plain-language data story?</h2>
+        <p>Read how TrackItMX handles location, ride data, group ride presence, optional health signals, and requests.</p>
+        <a class="button button--secondary" href="privacy/">Read Privacy</a>
+      </div>
+      <div class="resource-card reveal">
+        <p class="eyebrow">Group Ride</p>
+        <h2>Spectator links work from any device.</h2>
+        <p>Shared room links can open on the web so friends, family, or the crew can watch without the iPhone app.</p>
+        <a class="button button--secondary" href="group-ride/live/">Open Spectator Page</a>
       </div>
     </section>
 
     <section class="section final-cta">
       <div class="final-cta__panel reveal">
-        <p class="eyebrow">Beta help</p>
-        <h2>Need help after installing the beta?</h2>
+        <p class="eyebrow">Join the beta</p>
+        <h2>Ride it hard. Send the real notes.</h2>
         <p>
-          Download with TestFlight, then use your current inbox for feedback, bug reports, and support:
-          <a href="mailto:trackitmx.beta@gmail.com">trackitmx.beta@gmail.com</a>.
+          The current beta is built for off-road riders who want reliable recording, better review, and cleaner crew tools.
+          If something breaks, feels confusing, or simply needs to be better, send it to
+          <a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a>.
         </p>
         <div class="hero__actions hero__actions--compact">
-          <a class="button button--primary" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer">Open TestFlight</a>
-          <a class="button button--ghost" href="mailto:trackitmx.beta@gmail.com?subject=TrackItMX%20Support">Email Support</a>
+          <a
+            class="button button--primary"
+            href="https://testflight.apple.com/join/CxDbc7Bt"
+            target="_blank"
+            rel="noreferrer"
+            data-testflight-link
+          >Open TestFlight</a>
+          <a
+            class="button button--ghost"
+            href="mailto:support@trackitmx.com?subject=TrackItMX%20Support"
+            data-support-link
+            data-mail-subject="TrackItMX Support"
+          >Email support</a>
         </div>
       </div>
     </section>
@@ -299,15 +366,16 @@
     <div class="footer__brand">
       <img src="assets/trackitmx-mark.svg" alt="" aria-hidden="true">
       <div>
-        <strong>TrackItMX</strong>
-        <p>Public site for beta access, support, and privacy.</p>
+        <strong data-site-name>TrackItMX</strong>
+        <p>Off-road ride recording, review, navigation, and beta support.</p>
       </div>
     </div>
     <div class="footer__links">
       <a href="./">Home</a>
       <a href="support/">Support</a>
       <a href="privacy/">Privacy</a>
-      <a href="mailto:trackitmx.beta@gmail.com">trackitmx.beta@gmail.com</a>
+      <a href="group-ride/live/">Spectator</a>
+      <a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a>
     </div>
   </footer>
 </body>

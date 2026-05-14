@@ -270,6 +270,7 @@ p {
 .hero__lede,
 .section-heading p,
 .feature-card p,
+.loop-card p,
 .launch-card p,
 .platform-card p,
 .info-card p,
@@ -387,6 +388,7 @@ p {
 
 .launch-card,
 .feature-card,
+.loop-card,
 .platform-card,
 .info-card,
 .policy-card,
@@ -766,6 +768,7 @@ p {
 
 .launch-grid,
 .feature-grid,
+.loop-grid,
 .platform-grid,
 .support-grid,
 .policy-grid {
@@ -783,6 +786,10 @@ p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.loop-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .platform-grid {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
@@ -793,6 +800,7 @@ p {
 
 .launch-card,
 .feature-card,
+.loop-card,
 .platform-card,
 .info-card,
 .policy-card,
@@ -808,6 +816,7 @@ p {
 }
 
 .feature-card p,
+.loop-card p,
 .launch-card p,
 .platform-card p,
 .policy-card p,
@@ -817,10 +826,21 @@ p {
 }
 
 .support-card h3,
+.loop-card h3,
 .resource-card h2,
 .policy-card h2,
 .faq-item summary {
   overflow-wrap: anywhere;
+}
+
+.bullet-list {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  color: var(--text-soft);
+}
+
+.bullet-list li + li {
+  margin-top: 10px;
 }
 
 .product-stack {
@@ -828,6 +848,35 @@ p {
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: 26px;
   align-items: start;
+}
+
+.trust-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  gap: 24px;
+  padding: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  background:
+    radial-gradient(circle at top right, rgba(224, 166, 97, 0.18), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--panel-accent);
+}
+
+.trust-panel__copy p:not(.eyebrow) {
+  margin-top: 16px;
+  color: var(--text-soft);
+}
+
+.trust-panel__details {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.trust-list {
+  margin-top: 0;
 }
 
 .faq-list {
@@ -875,6 +924,10 @@ p {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+}
+
+.resources--triple {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .beta-spotlight__panel,
@@ -942,12 +995,15 @@ p {
   .page-hero,
   .product-stack,
   .resources,
+  .resources--triple,
+  .trust-panel,
   .spectator-panel,
   .spectator-layout {
     grid-template-columns: 1fr;
   }
 
   .feature-grid,
+  .loop-grid,
   .launch-grid,
   .platform-grid,
   .support-grid,
@@ -976,6 +1032,7 @@ p {
   }
 
   .feature-grid,
+  .loop-grid,
   .launch-grid,
   .platform-grid,
   .support-grid,

@@ -5,7 +5,7 @@ This site is a plain static website, so it can be hosted on GitHub Pages, Cloudf
 ## Recommended simple path: dedicated GitHub Pages repo
 
 1. Create a new GitHub repo for the site.
-2. Copy the contents of this `website/` folder into the repo root.
+2. Copy the contents of this site repo into the repo root.
 3. Push the repo to GitHub.
 4. Pick one of these GitHub Pages modes:
 
@@ -62,11 +62,9 @@ Use these values when the site is live:
 
 The site currently sends support and beta clicks to:
 
-- `trackitmx.beta@gmail.com`
+- `support@trackitmx.com`
 
-That does not require domain email hosting. It is just a `mailto:` link.
-
-If you later want addresses like `support@trackitmx.com`, set up email hosting separately and then update the `mailto:` links in the HTML files.
+Before launch, configure MX records or forwarding for `support@trackitmx.com` so the public support inbox actually receives mail.
 
 ## Editing after the site is live
 

@@ -1,0 +1,21 @@
+TrackItMX iPhone beta is live.
+
+Current beta focus:
+- Ride recording accuracy
+- Start, stop, pause, save, and restore behavior
+- Group ride rooms, live presence, and syncing
+- Apple Watch companion behavior
+- CarPlay navigation behavior, where available
+- Anything that feels confusing during a real ride
+
+Use whatever off-road setup you have: bike, truck, SxS, or ATV.
+
+Please send feedback that includes:
+- What you were doing
+- What device you used
+- Whether Watch or CarPlay was involved
+- What went wrong or felt confusing
+- What worked well
+- Any steps that could help reproduce the issue
+
+Don’t baby it. Ride it, test it, and send the real notes.
