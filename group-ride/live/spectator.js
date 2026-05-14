@@ -1014,8 +1014,12 @@ function fitMapToRiders(bounds) {
   state.hasAutoFit = true;
 }
 
-function centerMapOnRoomFallback() {
-  if (!state.map || state.userHasControlledMap || state.hasCenteredFallback || state.followedRiderId) {
+function centerMapOnRoomFallback({ force = false } = {}) {
+  if (!state.map) {
+    return;
+  }
+
+  if (!force && (state.userHasControlledMap || state.hasCenteredFallback || state.followedRiderId)) {
     return;
   }
 
@@ -1048,7 +1052,7 @@ function fitCurrentRiders({ force = false, fromUser = false } = {}) {
     if (fromUser) {
       state.userHasControlledMap = true;
     }
-    centerMapOnRoomFallback();
+    centerMapOnRoomFallback({ force: true });
     return;
   }
 
