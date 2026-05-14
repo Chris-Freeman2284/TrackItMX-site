@@ -7,10 +7,12 @@ const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey 
 const firestoreBase = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 const els = {
+  entry: document.getElementById("spectator-entry"),
   form: document.getElementById("spectator-form"),
   input: document.getElementById("room-code"),
   status: document.getElementById("spectator-status"),
   live: document.getElementById("spectator-live"),
+  leaveRoom: document.getElementById("leave-room"),
   roomTitle: document.getElementById("room-title"),
   roomSummary: document.getElementById("room-summary"),
   roomCodePill: document.getElementById("room-code-pill"),
@@ -56,13 +58,19 @@ function bootstrap() {
     void openRoom(rawCode);
   });
 
+  els.leaveRoom?.addEventListener("click", () => {
+    leaveRoom();
+  });
+
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden && state.roomId) {
       void refreshRoom();
     }
   });
 
-  const initialCode = new URLSearchParams(window.location.search).get("code") ?? "";
+  showEntry();
+
+  const initialCode = getRequestedCode();
   if (initialCode && els.input) {
     els.input.value = initialCode;
     void openRoom(initialCode);
@@ -95,6 +103,7 @@ async function openRoom(rawCode) {
 
     await refreshRoom(room);
     schedulePoll();
+    showLiveRoom();
   } catch (error) {
     state.roomId = null;
     state.shareCode = null;
@@ -150,6 +159,38 @@ function hideLiveRoom() {
   }
 }
 
+function showLiveRoom() {
+  if (els.entry) {
+    els.entry.hidden = true;
+  }
+
+  if (els.live) {
+    els.live.hidden = false;
+  }
+}
+
+function showEntry() {
+  if (els.entry) {
+    els.entry.hidden = false;
+  }
+}
+
+function leaveRoom() {
+  stopPolling();
+  state.roomId = null;
+  state.shareCode = null;
+  state.loading = false;
+
+  if (els.input) {
+    els.input.value = "";
+  }
+
+  clearUrlCode();
+  hideLiveRoom();
+  showEntry();
+  setStatus("Left the room. Enter a code to open another spectator view.", "idle");
+}
+
 function syncUrl(code) {
   if (!code) {
     return;
@@ -157,6 +198,13 @@ function syncUrl(code) {
 
   const next = new URL(window.location.href);
   next.searchParams.set("code", code);
+  window.history.replaceState({}, "", next.toString());
+}
+
+function clearUrlCode() {
+  const next = new URL(window.location.href);
+  next.searchParams.delete("code");
+  next.searchParams.delete("room");
   window.history.replaceState({}, "", next.toString());
 }
 
@@ -254,7 +302,7 @@ async function resolveActiveRoom(rawCode) {
 
   if (exact) {
     const exactRoom = await fetchRoomById(exact);
-    if (exactRoom?.active && !isRoomStale(exactRoom)) {
+    if (isRoomActive(exactRoom)) {
       return exactRoom;
     }
   }
@@ -517,6 +565,23 @@ function projectRiders(riders) {
       dotTone: getBadgeTone(rider)
     };
   });
+}
+
+function getRequestedCode() {
+  const params = new URLSearchParams(window.location.search);
+  const direct = params.get("code") ?? params.get("room") ?? "";
+  if (direct.trim()) {
+    return direct.trim();
+  }
+
+  const segments = window.location.pathname.split("/").filter(Boolean);
+  const last = segments.at(-1) ?? "";
+
+  if (last && last.toLowerCase() !== "live" && last.toLowerCase() !== "join") {
+    return last;
+  }
+
+  return "";
 }
 
 function normalizeCode(raw) {

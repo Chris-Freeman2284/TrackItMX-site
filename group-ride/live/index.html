@@ -31,7 +31,7 @@
 </head>
 <body class="page page--inner page--spectator">
   <div class="site-grit" aria-hidden="true"></div>
-  <header class="topbar">
+  <header class="topbar topbar--spectator">
     <a class="brand-lockup" href="../../" aria-label="TrackItMX home">
       <img class="brand-lockup__mark" src="../../assets/trackitmx-mark.svg" alt="">
       <span class="brand-lockup__text">
@@ -44,41 +44,16 @@
       <a href="../../support/">Support</a>
       <a href="../../privacy/">Privacy</a>
     </nav>
-    <a class="button button--ghost" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer" data-testflight-link>Join the iPhone beta</a>
   </header>
 
-  <main>
-    <section class="page-hero section">
-      <div class="page-hero__copy reveal">
-        <p class="eyebrow">Spectator view</p>
-        <h1>Watch a TrackItMX ride from any device.</h1>
-        <p class="hero__lede">
-          Open a shared room code to view live rider presence, room status, and current attention signals
-          without needing the iPhone app on the device you are watching from.
-        </p>
-      </div>
-      <div class="page-hero__aside reveal">
-        <div class="info-card">
-          <span class="label">Works from links</span>
-          <strong>Shared room codes supported</strong>
-          <p>The same spectator link the app shares can open this page directly.</p>
-        </div>
-        <div class="info-card">
-          <span class="label">Safety note</span>
-          <strong>Not emergency response</strong>
-          <p>This page is for visibility only. Always use real emergency services for urgent situations.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--tight">
-      <div class="spectator-panel reveal">
-        <div class="spectator-panel__copy">
-          <p class="eyebrow">Open a live room</p>
-          <h2>Enter a room code or use a shared spectator link.</h2>
-          <p>
-            If someone sent you a TrackItMX spectator link, this page should fill the room code automatically.
-            You can also type a code manually.
+  <main class="spectator-main">
+    <section id="spectator-entry" class="section spectator-entry">
+      <div class="spectator-entry__panel reveal">
+        <div class="spectator-entry__copy">
+          <p class="eyebrow">Spectator mode</p>
+          <h1>Open a live room.</h1>
+          <p class="hero__lede">
+            Use a shared spectator link or enter the room code manually to open the live room map.
           </p>
         </div>
         <form id="spectator-form" class="spectator-form" autocomplete="off">
@@ -94,112 +69,88 @@
               placeholder="Enter room code"
               aria-describedby="spectator-status"
             >
-            <button class="button button--primary" type="submit">Open Live Room</button>
+            <button class="button button--primary" type="submit">Open Room</button>
           </div>
           <p id="spectator-status" class="spectator-status">Waiting for a room code.</p>
         </form>
       </div>
     </section>
 
-    <section id="spectator-live" class="section spectator-live" hidden>
-      <div class="spectator-room reveal">
-        <div>
-          <p class="eyebrow">Live room</p>
-          <h2 id="room-title">TrackItMX Group Ride</h2>
-          <p id="room-summary" class="spectator-room__summary">Connecting to live room data.</p>
-        </div>
-        <div class="spectator-room__meta">
-          <span id="room-code-pill" class="spectator-pill">Room</span>
-          <span id="room-refresh-pill" class="spectator-pill">Refreshing</span>
-        </div>
-      </div>
-
-      <div class="spectator-stat-grid">
-        <article class="spectator-stat reveal">
-          <span class="label">Riders</span>
-          <strong id="stat-riders">0</strong>
-          <p>Total riders visible in this room.</p>
-        </article>
-        <article class="spectator-stat reveal">
-          <span class="label">Live now</span>
-          <strong id="stat-live">0</strong>
-          <p>Riders publishing truly live positions right now.</p>
-        </article>
-        <article class="spectator-stat reveal">
-          <span class="label">Fading</span>
-          <strong id="stat-attention">0</strong>
-          <p>Riders showing last-known or offline positions.</p>
-        </article>
-        <article class="spectator-stat reveal">
-          <span class="label">Last room ping</span>
-          <strong id="stat-room-age">--</strong>
-          <p>Best available room-level heartbeat age.</p>
-        </article>
-      </div>
-
-      <div class="spectator-layout">
-        <section class="spectator-field reveal" aria-label="Relative rider field view">
-          <div class="spectator-field__header">
-            <div>
-              <p class="eyebrow">Field view</p>
-              <h3>Relative rider positions</h3>
+    <section id="spectator-live" class="spectator-live" hidden>
+      <div class="spectator-room-shell reveal">
+        <div class="spectator-roombar">
+          <div class="spectator-roombar__copy">
+            <p class="eyebrow">Live room</p>
+            <h1 id="room-title">TrackItMX Group Ride</h1>
+            <p id="room-summary" class="spectator-room__summary">Connecting to live room data.</p>
+          </div>
+          <div class="spectator-roombar__actions">
+            <div class="spectator-room__meta">
+              <span id="room-code-pill" class="spectator-pill">Room</span>
+              <span id="room-refresh-pill" class="spectator-pill">Refreshing</span>
             </div>
-            <span class="spectator-field__hint">Approximate live placement</span>
+            <button id="leave-room" class="button button--secondary" type="button">Leave Room</button>
           </div>
-          <div id="spectator-field" class="spectator-field__canvas">
-            <div class="spectator-field__empty">Live rider positions will appear here when room data loads.</div>
-          </div>
-        </section>
+        </div>
 
-        <section class="spectator-riders reveal" aria-label="Rider list">
-          <div class="spectator-field__header">
-            <div>
-              <p class="eyebrow">Riders</p>
-              <h3>Live room details</h3>
+        <div class="spectator-stage">
+          <section class="spectator-map-card" aria-label="Live room map">
+            <div class="spectator-field__header">
+              <div>
+                <p class="eyebrow">Live map</p>
+                <h2>Room view</h2>
+              </div>
+              <span class="spectator-field__hint">Relative rider positions</span>
             </div>
-            <span class="spectator-field__hint">Sorted by freshness and active alerts</span>
-          </div>
-          <div id="spectator-riders-list" class="spectator-riders__list">
-            <article class="support-card">
-              <span class="label">Waiting</span>
-              <h3>No rider data yet</h3>
-              <p>Open a room code to start the live spectator view.</p>
-            </article>
-          </div>
-        </section>
-      </div>
-    </section>
+            <div id="spectator-field" class="spectator-field__canvas spectator-field__canvas--hero">
+              <div class="spectator-field__empty">Live rider positions will appear here when room data loads.</div>
+            </div>
+          </section>
 
-    <section class="section resources">
-      <div class="resource-card reveal">
-        <p class="eyebrow">TrackItMX app</p>
-        <h2>Want to ride instead of spectate?</h2>
-        <p>Join the current iPhone beta through TestFlight and start using TrackItMX directly.</p>
-        <a class="button button--primary" href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer" data-testflight-link>Open TestFlight</a>
-      </div>
-      <div class="resource-card resource-card--accent reveal">
-        <p class="eyebrow">Support</p>
-        <h2>Need help with a room link?</h2>
-        <p>Use the support page if a room code does not resolve or the live page does not behave as expected.</p>
-        <a class="button button--secondary" href="../../support/">Open Support</a>
+          <aside class="spectator-sidebar">
+            <div class="spectator-stat-grid spectator-stat-grid--stack">
+              <article class="spectator-stat">
+                <span class="label">Riders</span>
+                <strong id="stat-riders">0</strong>
+                <p>Total riders visible in this room.</p>
+              </article>
+              <article class="spectator-stat">
+                <span class="label">Live now</span>
+                <strong id="stat-live">0</strong>
+                <p>Riders publishing truly live positions right now.</p>
+              </article>
+              <article class="spectator-stat">
+                <span class="label">Fading</span>
+                <strong id="stat-attention">0</strong>
+                <p>Riders showing last-known or offline positions.</p>
+              </article>
+              <article class="spectator-stat">
+                <span class="label">Last room ping</span>
+                <strong id="stat-room-age">--</strong>
+                <p>Best available room-level heartbeat age.</p>
+              </article>
+            </div>
+
+            <section class="spectator-riders" aria-label="Rider list">
+              <div class="spectator-field__header">
+                <div>
+                  <p class="eyebrow">Riders</p>
+                  <h2>Live room details</h2>
+                </div>
+                <span class="spectator-field__hint">Sorted by freshness and active alerts</span>
+              </div>
+              <div id="spectator-riders-list" class="spectator-riders__list">
+                <article class="support-card">
+                  <span class="label">Waiting</span>
+                  <h3>No rider data yet</h3>
+                  <p>Open a room code to start the live spectator view.</p>
+                </article>
+              </div>
+            </section>
+          </aside>
+        </div>
       </div>
     </section>
   </main>
-
-  <footer class="footer">
-    <div class="footer__brand">
-      <img src="../../assets/trackitmx-mark.svg" alt="" aria-hidden="true">
-      <div>
-        <strong>TrackItMX</strong>
-        <p>Live spectator view for shared group rides.</p>
-      </div>
-    </div>
-    <div class="footer__links">
-      <a href="../../">Home</a>
-      <a href="../../support/">Support</a>
-      <a href="../../privacy/">Privacy</a>
-      <a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a>
-    </div>
-  </footer>
 </body>
 </html>

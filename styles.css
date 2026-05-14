@@ -562,10 +562,95 @@ p {
   gap: 24px;
 }
 
+.spectator-main {
+  width: var(--container);
+  margin: 0 auto;
+  padding-bottom: 56px;
+}
+
+.topbar--spectator {
+  margin-bottom: 8px;
+}
+
+.spectator-entry {
+  width: 100%;
+  padding-top: 30px;
+}
+
+.spectator-entry__panel,
+.spectator-room-shell,
+.spectator-map-card {
+  border: 1px solid var(--line-strong);
+  background:
+    radial-gradient(circle at top right, rgba(224, 166, 97, 0.14), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--panel-accent);
+  box-shadow: var(--shadow);
+}
+
+.spectator-entry__panel,
+.spectator-room-shell {
+  border-radius: var(--radius-xl);
+  padding: 26px;
+}
+
+.spectator-entry__panel {
+  display: grid;
+  gap: 22px;
+}
+
+.spectator-entry__copy p:not(.eyebrow) {
+  margin-top: 16px;
+  color: var(--text-soft);
+}
+
+.spectator-room-shell {
+  display: grid;
+  gap: 22px;
+}
+
+.spectator-roombar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: start;
+}
+
+.spectator-roombar__copy p:not(.eyebrow) {
+  margin-top: 14px;
+  color: var(--text-soft);
+}
+
+.spectator-roombar__actions {
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+}
+
+.spectator-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) minmax(320px, 0.72fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.spectator-map-card,
+.spectator-riders {
+  border-radius: var(--radius-xl);
+}
+
+.spectator-map-card {
+  padding: 24px;
+}
+
 .spectator-stat-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
+}
+
+.spectator-stat-grid--stack {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .spectator-stat {
@@ -631,6 +716,10 @@ p {
     ),
     #110b08;
   overflow: hidden;
+}
+
+.spectator-field__canvas--hero {
+  min-height: clamp(520px, 72vh, 860px);
 }
 
 .spectator-field__canvas::before {
@@ -703,6 +792,12 @@ p {
 .spectator-riders__list {
   display: grid;
   gap: 16px;
+}
+
+.spectator-sidebar {
+  display: grid;
+  gap: 18px;
+  align-content: start;
 }
 
 .spectator-rider {
@@ -998,6 +1093,7 @@ p {
   .resources--triple,
   .trust-panel,
   .spectator-panel,
+  .spectator-stage,
   .spectator-layout {
     grid-template-columns: 1fr;
   }
@@ -1044,7 +1140,8 @@ p {
   }
 
   .spectator-form__row,
-  .spectator-room {
+  .spectator-room,
+  .spectator-roombar {
     grid-template-columns: 1fr;
   }
 
@@ -1054,6 +1151,14 @@ p {
 
   .spectator-field__canvas {
     min-height: 340px;
+  }
+
+  .spectator-field__canvas--hero {
+    min-height: 58vh;
+  }
+
+  .spectator-roombar__actions {
+    justify-items: stretch;
   }
 
   .footer {

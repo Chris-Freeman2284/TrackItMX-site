@@ -11,6 +11,25 @@
   <link rel="apple-touch-icon" href="assets/trackitmx-mark.png">
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      const current = new URL(window.location.href);
+      const trimmedPath = current.pathname.replace(/\/+$/, "");
+      const requestedCode = current.searchParams.get("code") || current.searchParams.get("room") || "";
+
+      const redirectToSpectator = () => {
+        const next = new URL("/group-ride/live/", current.origin);
+        if (requestedCode) {
+          next.searchParams.set("code", requestedCode);
+        }
+        window.location.replace(next.toString());
+      };
+
+      if (trimmedPath === "/group-ride/live" || trimmedPath === "/join" || trimmedPath === "/group-ride/join") {
+        redirectToSpectator();
+      }
+    })();
+  </script>
   <script defer src="app.js"></script>
   <script defer src="analytics-config.js"></script>
 </head>
