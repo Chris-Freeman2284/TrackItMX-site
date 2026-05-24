@@ -43,6 +43,16 @@ Before enabling spectator deployment again:
 6. In your DNS provider, point the domain at GitHub Pages.
 7. Wait for DNS and HTTPS to finish provisioning.
 
+## Share-link handoff
+
+TrackItMX share links depend on three web pieces shipping together:
+
+- `/.well-known/apple-app-site-association`
+- `/join/`
+- `/place/`
+
+Make sure the production host serves `/.well-known/apple-app-site-association` from that exact path without a redirect and with a JSON-compatible content type. Without that, iPhone will fall back to the website pages instead of opening the app directly.
+
 ## DNS shape to use
 
 For an apex domain like `trackitmx.com`, point the root domain to these GitHub Pages A records:

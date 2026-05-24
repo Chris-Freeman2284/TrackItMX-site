@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrackItMX Group Ride Invite</title>
+  <title>TrackItMX Shared Place</title>
   <meta
     name="description"
-    content="Open a shared TrackItMX group ride invite."
+    content="Open a shared place in TrackItMX."
   >
   <meta name="theme-color" content="#070504">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta property="og:title" content="TrackItMX Group Ride Invite">
+  <meta property="og:title" content="TrackItMX Shared Place">
   <meta
     property="og:description"
-    content="Open this group ride invite in TrackItMX."
+    content="Open this saved place in TrackItMX."
   >
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://trackitmx.com/join/">
+  <meta property="og:url" content="https://trackitmx.com/place/">
   <meta property="og:image" content="../assets/marketing-card.png">
   <link rel="icon" type="image/svg+xml" href="../assets/trackitmx-mark.svg">
   <link rel="apple-touch-icon" href="../assets/trackitmx-mark.png">
-  <link rel="canonical" href="https://trackitmx.com/join/">
+  <link rel="canonical" href="https://trackitmx.com/place/">
   <link rel="manifest" href="../site.webmanifest">
   <link rel="stylesheet" href="../styles.css">
   <script defer src="../site-config.js"></script>
@@ -34,7 +34,7 @@
       <img class="brand-lockup__mark" src="../assets/trackitmx-mark.svg" alt="">
       <span class="brand-lockup__text">
         <strong>TrackIt<span>MX</span></strong>
-        <small>Group Ride Invite</small>
+        <small>Shared Place</small>
       </span>
     </a>
     <nav class="topnav" aria-label="Primary">
@@ -54,13 +54,13 @@
   <main>
     <section class="page-hero section">
       <div class="page-hero__copy reveal">
-        <p class="eyebrow">Group ride invite</p>
-        <h1 id="invite-title">Opening this ride in TrackItMX.</h1>
-        <p id="invite-subtitle" class="hero__lede">
-          If the app is installed, this invite should open there automatically.
+        <p class="eyebrow">Shared place</p>
+        <h1 id="place-title">Opening this place in TrackItMX.</h1>
+        <p id="place-subtitle" class="hero__lede">
+          If the app is installed, this place should open there automatically.
         </p>
         <div class="hero__actions hero__actions--compact">
-          <a id="open-in-app" class="button button--primary" href="trackitmx://group-ride/join">Open in TrackItMX</a>
+          <a id="open-in-app" class="button button--primary" href="trackitmx://place/">Open in TrackItMX</a>
           <a
             class="button button--secondary"
             href="https://testflight.apple.com/join/CxDbc7Bt"
@@ -73,8 +73,8 @@
       <div class="page-hero__aside reveal">
         <div class="info-card">
           <span class="label">TrackItMX link</span>
-          <strong>Shared group ride</strong>
-          <p>Open the invite in TrackItMX to join the room, then ride or follow along from there.</p>
+          <strong>Shared location</strong>
+          <p>Open the place in TrackItMX, then preview or start navigation from there.</p>
         </div>
       </div>
     </section>
@@ -83,26 +83,34 @@
   <script>
     (function () {
       const params = new URLSearchParams(window.location.search);
-      const code = (params.get("code") || params.get("room") || "").trim();
+      const name = (params.get("n") || params.get("name") || "Shared place").trim();
+      const category = (params.get("k") || params.get("category") || "").trim();
+      const ll = (params.get("ll") || "").trim();
+      const lat = (params.get("lat") || "").trim();
+      const lon = (params.get("lon") || params.get("lng") || "").trim();
 
-      const title = document.getElementById("invite-title");
-      const subtitle = document.getElementById("invite-subtitle");
+      const title = document.getElementById("place-title");
+      const subtitle = document.getElementById("place-subtitle");
       const openInApp = document.getElementById("open-in-app");
 
-      if (code && title) {
-        title.textContent = "Open room " + code + " in TrackItMX.";
+      if (title) {
+        title.textContent = "Open " + name + " in TrackItMX.";
       }
 
-      if (code && subtitle) {
-        subtitle.textContent = "Room code " + code + " is ready. If the app is installed, this invite should open there automatically.";
+      if (subtitle && category) {
+        subtitle.textContent = category + " shared from TrackItMX. If the app is installed, this should open there automatically.";
       }
 
       const next = new URLSearchParams();
-      if (code) {
-        next.set("code", code);
+      if (name) next.set("n", name);
+      if (category) next.set("k", category);
+      if (ll) {
+        next.set("ll", ll);
+      } else if (lat && lon) {
+        next.set("ll", lat + "," + lon);
       }
 
-      const deepLink = "trackitmx://group-ride/join" + (next.toString() ? "?" + next.toString() : "");
+      const deepLink = "trackitmx://place/" + (next.toString() ? "?" + next.toString() : "");
       if (openInApp) {
         openInApp.setAttribute("href", deepLink);
       }

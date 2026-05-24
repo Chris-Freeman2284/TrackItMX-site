@@ -15,10 +15,16 @@ TODO before launch: configure MX records or forwarding for `support@trackitmx.co
 ## Routes
 
 - `/` - marketing + product overview
+- `/join/` - group ride invite opener that hands off to the app
+- `/place/` - shared place opener that hands off to the app
 - `/support/` - support page for App Store and public help
 - `/privacy/` - privacy policy
 - `/group-ride/live/` - live spectator page for shared group ride links
 - `/404.html` - branded not-found page
+
+## App link support
+
+- `/.well-known/apple-app-site-association` - associated-domain routing for TrackItMX share links
 
 ## App Store links
 
