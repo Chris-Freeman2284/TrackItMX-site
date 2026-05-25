@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "BR676C2C8R.com.chrisfreeman.TrackItMX2.0",
+        "paths": [
+          "/join",
+          "/join/*",
+          "/place",
+          "/place/*",
+          "/group-ride/*"
+        ]
+      }
+    ]
+  }
+}
