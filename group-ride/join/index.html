@@ -3,39 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrackItMX | Opening Group Ride</title>
-  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>TrackItMX Group Ride Invite</title>
+  <meta
+    name="description"
+    content="Open a shared TrackItMX group ride invite."
+  >
   <meta name="theme-color" content="#070504">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta property="og:title" content="TrackItMX Group Ride Invite">
+  <meta
+    property="og:description"
+    content="Open this group ride invite in TrackItMX."
+  >
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://trackitmx.com/group-ride/join/">
+  <meta property="og:image" content="../../assets/marketing-card.png">
   <link rel="icon" type="image/svg+xml" href="../../assets/trackitmx-mark.svg">
   <link rel="apple-touch-icon" href="../../assets/trackitmx-mark.png">
+  <link rel="canonical" href="https://trackitmx.com/group-ride/join/">
   <link rel="manifest" href="../../site.webmanifest">
   <link rel="stylesheet" href="../../styles.css">
-  <script>
-    (function () {
-      const current = new URL(window.location.href);
-      const code = current.searchParams.get("code") || current.searchParams.get("room") || "";
-      const next = new URL("/group-ride/live/", current.origin);
-
-      if (code) {
-        next.searchParams.set("code", code);
-      }
-
-      window.location.replace(next.toString());
-    })();
-  </script>
+  <script defer src="../../site-config.js"></script>
+  <script defer src="../../app.js"></script>
+  <script defer src="../../analytics-config.js"></script>
 </head>
 <body class="page page--inner">
   <div class="site-grit" aria-hidden="true"></div>
-  <main class="spectator-main">
-    <section class="section spectator-entry">
-      <div class="spectator-entry__panel">
-        <div class="spectator-entry__copy">
-          <p class="eyebrow">Redirecting</p>
-          <h1>Opening spectator mode.</h1>
-          <p class="hero__lede">If the room does not open automatically, <a href="../live/">tap here</a>.</p>
+  <header class="topbar">
+    <a class="brand-lockup" href="../../" aria-label="TrackItMX home">
+      <img class="brand-lockup__mark" src="../../assets/trackitmx-mark.svg" alt="">
+      <span class="brand-lockup__text">
+        <strong>TrackIt<span>MX</span></strong>
+        <small>Group Ride Invite</small>
+      </span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="../../">Home</a>
+      <a href="../../support/">Support</a>
+      <a href="../../privacy/">Privacy</a>
+    </nav>
+    <a
+      class="button button--ghost"
+      href="https://testflight.apple.com/join/CxDbc7Bt"
+      target="_blank"
+      rel="noreferrer"
+      data-testflight-link
+    >Join the beta</a>
+  </header>
+
+  <main>
+    <section class="page-hero section">
+      <div class="page-hero__copy reveal">
+        <p class="eyebrow">Group ride invite</p>
+        <h1 id="invite-title">Opening this ride in TrackItMX.</h1>
+        <p id="invite-subtitle" class="hero__lede">
+          If the app is installed, this invite should open there automatically.
+        </p>
+        <div class="hero__actions hero__actions--compact">
+          <a id="open-in-app" class="button button--primary" href="trackitmx://group-ride/join">Open in TrackItMX</a>
+          <a id="watch-on-web" class="button button--secondary" href="../live/">Watch on web</a>
+          <a
+            class="button button--ghost"
+            href="https://testflight.apple.com/join/CxDbc7Bt"
+            target="_blank"
+            rel="noreferrer"
+            data-testflight-link
+          >Get the app</a>
+        </div>
+      </div>
+      <div class="page-hero__aside reveal">
+        <div class="info-card">
+          <span class="label">TrackItMX link</span>
+          <strong>Shared group ride</strong>
+          <p>Join opens the ride in TrackItMX. Watch on web keeps spectators out of the rider list.</p>
         </div>
       </div>
     </section>
   </main>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const code = (params.get("code") || params.get("room") || "").trim();
+
+      const title = document.getElementById("invite-title");
+      const subtitle = document.getElementById("invite-subtitle");
+      const openInApp = document.getElementById("open-in-app");
+      const watchOnWeb = document.getElementById("watch-on-web");
+
+      if (code && title) {
+        title.textContent = "Open room " + code + " in TrackItMX.";
+      }
+
+      if (code && subtitle) {
+        subtitle.textContent = "Room code " + code + " is ready. If the app is installed, this invite should open there automatically.";
+      }
+
+      const next = new URLSearchParams();
+      if (code) {
+        next.set("code", code);
+      }
+
+      const deepLink = "trackitmx://group-ride/join" + (next.toString() ? "?" + next.toString() : "");
+      if (openInApp) {
+        openInApp.setAttribute("href", deepLink);
+      }
+
+      const watchUrl = new URL("../live/", window.location.href);
+      if (code) {
+        watchUrl.searchParams.set("code", code);
+      }
+      if (watchOnWeb) {
+        watchOnWeb.setAttribute("href", watchUrl.toString());
+      }
+
+      setTimeout(function () {
+        window.location.href = deepLink;
+      }, 140);
+    }());
+  </script>
 </body>
 </html>
