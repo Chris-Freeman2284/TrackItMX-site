@@ -73,6 +73,8 @@ bootstrap();
 
 function bootstrap() {
   if (!FIREBASE_WEB_API_KEY) {
+    hideLiveRoom();
+    showEntry();
     if (els.input) {
       els.input.disabled = true;
       els.input.placeholder = "Spectator view is not configured";
@@ -144,7 +146,7 @@ async function openRoom(rawCode) {
 
   if (!cleanedExact && !normalized) {
     hideLiveRoom();
-    setStatus("Enter a room code to open the ride.", "idle");
+    setStatus("Enter a room code to open the live map.", "idle");
     return;
   }
 
@@ -246,6 +248,7 @@ function stopPolling() {
 function hideLiveRoom() {
   if (els.live) {
     els.live.hidden = true;
+    els.live.style.display = "none";
   }
 
   document.body.classList.remove("page--spectator-room-active");
@@ -254,10 +257,12 @@ function hideLiveRoom() {
 function showLiveRoom() {
   if (els.entry) {
     els.entry.hidden = true;
+    els.entry.style.display = "none";
   }
 
   if (els.live) {
     els.live.hidden = false;
+    els.live.style.display = "grid";
   }
 
   document.body.classList.add("page--spectator-room-active");
@@ -270,6 +275,7 @@ function showLiveRoom() {
 function showEntry() {
   if (els.entry) {
     els.entry.hidden = false;
+    els.entry.style.display = "";
   }
 
   document.body.classList.remove("page--spectator-room-active");

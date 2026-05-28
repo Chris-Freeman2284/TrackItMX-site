@@ -13,7 +13,7 @@
   <meta property="og:title" content="Invite to Group Ride">
   <meta
     property="og:description"
-    content="Open this group ride invite in TrackItMX."
+    content="Open this group ride invite in TrackItMX or watch the room on the web."
   >
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://trackitmx.com/join/">
@@ -60,7 +60,7 @@
         <p class="eyebrow">Group ride invite</p>
         <h1 id="invite-title">Opening this ride in TrackItMX.</h1>
         <p id="invite-subtitle" class="hero__lede">
-          If the app is installed, this invite should open there automatically.
+          If the app is installed, this invite should open there automatically. If not, you can still follow on the web.
         </p>
         <div class="hero__actions hero__actions--compact">
           <a id="open-in-app" class="button button--primary" href="trackitmx://group-ride/join">Open in TrackItMX</a>
@@ -76,9 +76,9 @@
       </div>
       <div class="page-hero__aside reveal">
         <div class="info-card">
-          <span class="label">TrackItMX link</span>
-          <strong>Shared group ride</strong>
-          <p>Join opens the ride in TrackItMX. Watch on web keeps spectators out of the rider list.</p>
+          <span class="label">Rider or spectator</span>
+          <strong>Choose the right path for this room</strong>
+          <p>Open in TrackItMX if you are joining the ride. Watch on web is the cleaner path for spectators and crew.</p>
         </div>
       </div>
     </section>
@@ -99,7 +99,7 @@
       }
 
       if (code && subtitle) {
-        subtitle.textContent = "Room code " + code + " is ready. If the app is installed, this invite should open there automatically.";
+        subtitle.textContent = "Room code " + code + " is ready. If the app is installed, this invite should open there automatically. If not, the web spectator view is ready too.";
       }
 
       const next = new URLSearchParams();

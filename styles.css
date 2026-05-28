@@ -67,6 +67,10 @@ img {
   max-width: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -78,6 +82,14 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 2px solid rgba(224, 166, 97, 0.62);
+  outline-offset: 3px;
 }
 
 .site-grit {
@@ -226,6 +238,15 @@ h3,
 
 .page--home .hero__copy {
   max-width: 860px;
+}
+
+.page--home .hero h1 {
+  max-width: 12ch;
+  font-size: clamp(3.1rem, 7vw, 5.8rem);
+}
+
+.page--home .hero__lede {
+  max-width: 54ch;
 }
 
 .page-hero__aside {
