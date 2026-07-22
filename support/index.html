@@ -6,14 +6,14 @@
   <title>TrackItMX Support | Beta Help and Rider Feedback</title>
   <meta
     name="description"
-    content="Get help with the TrackItMX beta, report ride recording issues, troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
+    content="Get help with the TrackItMX beta, report ride recording or spectator issues, and troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
   >
   <meta name="theme-color" content="#070504">
   <meta name="robots" content="index,follow">
   <meta property="og:title" content="TrackItMX Support | Beta Help and Rider Feedback">
   <meta
     property="og:description"
-    content="Get help with the TrackItMX beta, report ride recording issues, troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
+    content="Get help with the TrackItMX beta, report ride recording or spectator issues, and troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
   >
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://trackitmx.com/support/">
@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="../assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/support/">
   <link rel="manifest" href="../site.webmanifest">
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260722">
   <script defer src="../site-config.js"></script>
   <script defer src="../app.js"></script>
   <script defer src="../analytics-config.js"></script>
@@ -59,8 +59,8 @@
         <p class="eyebrow">Support</p>
         <h1>TrackItMX support, beta help, and rider feedback.</h1>
         <p class="hero__lede">
-          Use this page for beta install help, bug reports, spectator link issues, troubleshooting, privacy request
-          paths, and feedback from real rides.
+          Use this page for beta install help, bug reports, weak-service group ride issues, spectator link problems,
+          privacy request paths, and feedback from real rides.
         </p>
       </div>
       <div class="page-hero__aside reveal">
@@ -75,9 +75,9 @@
           <p>Install the current iPhone beta directly through Apple TestFlight.</p>
         </div>
         <div class="info-card">
-          <span class="label">Web spectator</span>
-          <strong><a href="../group-ride/live/">Open the live spectator page</a></strong>
-          <p>Shared room links can open on the web so friends, family, or the crew can follow without the app.</p>
+          <span class="label">Current beta focus</span>
+          <strong>Reliable recording, live rooms, believable routing</strong>
+          <p>That means ride saves, group ride continuity, spectator links, watch handoff, and trail routes that make sense.</p>
         </div>
       </div>
     </section>
@@ -85,11 +85,11 @@
     <section id="contact" class="section">
       <div class="section-heading reveal">
         <p class="eyebrow">Contact</p>
-        <h2>How to reach us without wasting your ride details.</h2>
+        <h2>How to reach us with the details that actually help.</h2>
         <p>
           The fastest way to get useful help is to send the right context the first time. Start with support for
-          install help, ride recording issues, navigation questions, or bug follow-up. Use the privacy page when the
-          question is specifically about data use, access, correction, or deletion.
+          install help, ride recording issues, group ride problems, weak-service weirdness, or bug follow-up.
+          Use the privacy page when the question is specifically about data use, access, correction, or deletion.
         </p>
       </div>
       <div class="support-grid">
@@ -121,6 +121,8 @@
           <li>TrackItMX build number, if visible</li>
           <li>Whether Apple Watch or CarPlay was involved</li>
           <li>Whether the issue happened in the app or on the web spectator page</li>
+          <li>Whether service was strong, weak, or basically gone</li>
+          <li>Whether the link was a group invite, spectator invite, or place link</li>
           <li>Whether the app was in the background</li>
           <li>Whether the ride was phone-only or watch-linked</li>
           <li>What you expected to happen</li>
@@ -133,7 +135,8 @@
         <h2>Send the messy ride version, not the cleaned-up one.</h2>
         <p>
           The best reports come from real conditions: low service, a watch connection that felt weird, a save that did
-          not look right, a room that stopped feeling live, or a navigation handoff that made no sense in the truck.
+          not look right, a room that stopped feeling live, or a trail route that clearly did not respect how riders
+          actually arrive.
         </p>
         <a
           class="button button--primary"
@@ -161,7 +164,8 @@
           <summary>Does TrackItMX work without cell service?</summary>
           <p>
             Core navigation and ride recording flows are being built with low-service riding in mind. Cloud-backed
-            features like live group rooms, sharing, backup, restore, and some syncing still need network access.
+            features like live group rooms, spectator links, sharing, backup, restore, and some syncing still need
+            network access. Weak-service Group Ride is active beta work, not a finished promise yet.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -182,7 +186,15 @@
           <summary>What helps most when reporting a recording issue?</summary>
           <p>
             Tell us whether the ride was phone-only or watch-linked, whether the app went to the background, what trail
-            or route context mattered, and what you expected to happen instead of what actually did.
+            or route context mattered, whether service was weak, and what you expected to happen instead of what actually did.
+          </p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>What beta feedback matters most right now?</summary>
+          <p>
+            The highest-value notes right now are lost or confusing saves, trail versus lap confusion, rider rooms that
+            go stale, spectator links that open the wrong path, watch handoff weirdness, and routes that obviously do
+            not respect the trail access riders use.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -231,7 +243,8 @@
           <h3>Live rider presence looks stale or missing</h3>
           <p>
             Group Ride depends on permissions and connectivity. If the live source was watch-led, temporarily keeping the
-            phone nearby may help while the bridge refreshes and the room catches up.
+            phone nearby may help while the room catches back up. Tell us whether the room was in weak service, because
+            that is still an active hardening area.
           </p>
         </article>
         <article class="support-card reveal">
@@ -239,7 +252,7 @@
           <h3>The room opens but the live map looks wrong</h3>
           <p>
             Reload the page once, confirm the room code is correct, and note the browser and device you were using if
-            riders or the map still do not look right.
+            riders or the map still do not look right. If the link opened the wrong path, tell us exactly which link type you used.
           </p>
         </article>
         <article class="support-card reveal">
