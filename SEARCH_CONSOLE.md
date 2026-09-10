@@ -14,6 +14,7 @@ Once `https://trackitmx.com/` is live:
 - `https://trackitmx.com/`
 - `https://trackitmx.com/support/`
 - `https://trackitmx.com/privacy/`
+- `https://trackitmx.com/terms/`
 
 ## Notes
 

@@ -3,7 +3,7 @@ document.documentElement.classList.add("js");
 const publicConfig = window.TRACKITMX_PUBLIC ?? {};
 const SITE_NAME = publicConfig.SITE_NAME ?? "TrackItMX";
 const SUPPORT_EMAIL = publicConfig.SUPPORT_EMAIL ?? "support@trackitmx.com";
-const TESTFLIGHT_URL = publicConfig.TESTFLIGHT_URL ?? "https://testflight.apple.com/join/CxDbc7Bt";
+const APP_STORE_URL = String(publicConfig.APP_STORE_URL ?? "").trim();
 
 const buildMailto = (email, subject) => {
   const trimmedSubject = subject?.trim();
@@ -32,12 +32,18 @@ const syncPublicConstants = () => {
     node.href = buildMailto(SUPPORT_EMAIL, node.dataset.mailSubject ?? "");
   });
 
-  document.querySelectorAll("[data-testflight-link]").forEach((node) => {
+  document.querySelectorAll("[data-app-store-link]").forEach((node) => {
     if (!(node instanceof HTMLAnchorElement)) {
       return;
     }
 
-    node.href = TESTFLIGHT_URL;
+    if (!APP_STORE_URL) {
+      return;
+    }
+
+    node.href = APP_STORE_URL;
+    node.target = "_blank";
+    node.rel = "noreferrer";
   });
 };
 

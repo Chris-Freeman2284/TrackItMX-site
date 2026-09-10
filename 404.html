@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="assets/trackitmx-mark.png">
   <link rel="apple-touch-icon" href="assets/trackitmx-mark.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20260722">
+  <link rel="stylesheet" href="styles.css?v=20260910">
   <script>
     (function () {
       const current = new URL(window.location.href);
@@ -25,8 +25,16 @@
         window.location.replace(next.toString());
       };
 
+      const redirectToRideViewer = () => {
+        const next = new URL("/ride/", current.origin);
+        next.search = current.search;
+        window.location.replace(next.toString());
+      };
+
       if (trimmedPath === "/group-ride/live" || trimmedPath === "/join" || trimmedPath === "/group-ride/join") {
         redirectToSpectator();
+      } else if (trimmedPath === "/ride") {
+        redirectToRideViewer();
       }
     })();
   </script>
@@ -47,6 +55,7 @@
       <a href="./">Home</a>
       <a href="support/">Support</a>
       <a href="privacy/">Privacy</a>
+      <a href="terms/">Terms</a>
     </nav>
   </header>
 
@@ -62,6 +71,7 @@
           <a class="button button--primary" href="./">Go Home</a>
           <a class="button button--secondary" href="support/">Open Support</a>
           <a class="button button--secondary" href="privacy/">Open Privacy</a>
+          <a class="button button--secondary" href="terms/">Open Terms</a>
         </div>
       </div>
     </section>

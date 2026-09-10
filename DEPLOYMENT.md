@@ -21,16 +21,16 @@ This site is a plain static website, so it can be hosted on GitHub Pages, Cloudf
 - Set the source to `GitHub Actions`.
 - The included workflow is manual by default, so you can run it from the `Actions` tab without affecting the simpler branch-based setup.
 - Add a GitHub Actions secret named `TRACKITMX_FIREBASE_WEB_API_KEY`.
-- Use a dedicated web-only Firebase API key for the spectator page rather than reusing the iPhone app key.
+- Use a dedicated web-only Firebase API key for the spectator and private shared ride pages rather than reusing the iPhone app key.
 - Restrict that web-only key to the `trackitmx.com` and `www.trackitmx.com` web origins you actually serve.
 - The workflow writes `runtime-config.js` during deploy, so the key is present in the published site but not committed to git.
 - Rotate or restrict the previously exposed Firebase key. GitHub or GitGuardian may keep warning until the old key is remediated, because it already exists in repo history.
 
-#### Spectator relaunch checklist
+#### Spectator and shared ride relaunch checklist
 
-Before enabling spectator deployment again:
+Before enabling spectator or private shared ride deployment again:
 
-1. Create a dedicated Firebase web API key just for the spectator page.
+1. Create a dedicated Firebase web API key just for the website.
 2. Restrict that key to the live web origins:
    - `https://trackitmx.com/*`
    - `https://www.trackitmx.com/*`
@@ -38,6 +38,7 @@ Before enabling spectator deployment again:
 4. Switch GitHub Pages to the `GitHub Actions` source if you want runtime injection to happen during deploy.
 5. Rotate or tightly restrict the previously exposed key so repo-history scanners stop flagging it as a live secret.
 6. Re-run the deploy workflow only after the secret exists and the old key remediation is complete.
+7. Confirm `https://trackitmx.com/ride/?s=<privateRideShareID>` opens a real shared ride from Safari, Messages, and a non-iOS browser.
 
 5. In GitHub Pages, set the custom domain to `trackitmx.com`.
 6. In your DNS provider, point the domain at GitHub Pages.
@@ -75,14 +76,19 @@ Use these values when the site is live:
 - Support URL: `https://trackitmx.com/support/`
 - Privacy Policy URL: `https://trackitmx.com/privacy/`
 - Optional Privacy Choices URL: `https://trackitmx.com/privacy/#your-choices`
+- Terms URL used by the app: `https://trackitmx.com/terms/`
 
 ## Email links
 
-The site currently sends support and beta clicks to:
+The site currently sends support clicks to:
 
 - `support@trackitmx.com`
 
 Before launch, configure MX records or forwarding for `support@trackitmx.com` so the public support inbox actually receives mail.
+
+## App Store download link
+
+The public download buttons use `APP_STORE_URL` in `site-config.js`. Leave it blank until Apple gives you the final listing URL, then paste the full App Store URL there and push the site. Every `data-app-store-link` button will update automatically.
 
 ## Editing after the site is live
 
@@ -108,5 +114,8 @@ Review these items one more time:
 
 - The privacy policy still matches the app’s real data handling.
 - The support page includes the contact information you want public.
+- `https://trackitmx.com/terms/` loads correctly because the app legal center links to it.
+- `APP_STORE_URL` in `site-config.js` points to the live App Store listing.
 - Any legally required business address or support phone details for your launch regions are added if needed.
-- The Pages repo is serving from the repo root so links like `/support/` and `/privacy/` resolve correctly.
+- The Pages repo is serving from the repo root so links like `/support/`, `/privacy/`, and `/terms/` resolve correctly.
+- Private ride share links open `/ride/?s=<privateRideShareID>` and remain unlisted/noindex.

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TrackItMX Support | Beta Help and Rider Feedback</title>
+  <title>TrackItMX Support | Help, Ride Issues, and Feedback</title>
   <meta
     name="description"
-    content="Get help with the TrackItMX beta, report ride recording or spectator issues, and troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
+    content="Get help with TrackItMX, report ride recording issues, troubleshoot Watch, CarPlay, Group Ride, spectator links, shared ride links, navigation, and privacy questions."
   >
   <meta name="theme-color" content="#070504">
   <meta name="robots" content="index,follow">
-  <meta property="og:title" content="TrackItMX Support | Beta Help and Rider Feedback">
+  <meta property="og:title" content="TrackItMX Support | Help, Ride Issues, and Feedback">
   <meta
     property="og:description"
-    content="Get help with the TrackItMX beta, report ride recording or spectator issues, and troubleshoot Watch, CarPlay, group ride, navigation, and privacy questions."
+    content="Get help with TrackItMX, report ride recording issues, troubleshoot Watch, CarPlay, Group Ride, spectator links, shared ride links, navigation, and privacy questions."
   >
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://trackitmx.com/support/">
@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="../assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/support/">
   <link rel="manifest" href="../site.webmanifest">
-  <link rel="stylesheet" href="../styles.css?v=20260722">
+  <link rel="stylesheet" href="../styles.css?v=20260910">
   <script defer src="../site-config.js"></script>
   <script defer src="../app.js"></script>
   <script defer src="../analytics-config.js"></script>
@@ -39,10 +39,11 @@
     </a>
     <nav class="topnav" aria-label="Primary">
       <a href="../">Home</a>
+      <a href="#download">Download</a>
       <a href="#contact">Contact</a>
       <a href="#bug-report">Bug reports</a>
+      <a href="#shared-rides">Shared rides</a>
       <a href="#faq">FAQ</a>
-      <a href="#troubleshooting">Troubleshooting</a>
       <a href="../privacy/">Privacy</a>
     </nav>
     <a
@@ -57,27 +58,27 @@
     <section class="page-hero section">
       <div class="page-hero__copy reveal">
         <p class="eyebrow">Support</p>
-        <h1>TrackItMX support, beta help, and rider feedback.</h1>
+        <h1>TrackItMX support, ride help, and feedback.</h1>
         <p class="hero__lede">
-          Use this page for beta install help, bug reports, weak-service group ride issues, spectator link problems,
-          privacy request paths, and feedback from real rides.
+          Use this page for install help, bug reports, troubleshooting, privacy request paths,
+          and feedback from real rides.
         </p>
       </div>
       <div class="page-hero__aside reveal">
         <div class="info-card">
           <span class="label">Support email</span>
           <strong><a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a></strong>
-          <p>Use this inbox for support, beta feedback, privacy questions, and ride issue follow-up.</p>
+          <p>Use this inbox for support, ride issue follow-up, privacy questions, and product feedback.</p>
+        </div>
+        <div id="download" class="info-card">
+          <span class="label">Download</span>
+          <strong><a href="mailto:support@trackitmx.com?subject=TrackItMX%20Download%20Help" data-app-store-link>Get TrackItMX</a></strong>
+          <p>Use the App Store download path for the public iPhone release. If something does not open correctly, email support.</p>
         </div>
         <div class="info-card">
-          <span class="label">iPhone beta</span>
-          <strong><a href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer" data-testflight-link>Join TrackItMX on TestFlight</a></strong>
-          <p>Install the current iPhone beta directly through Apple TestFlight.</p>
-        </div>
-        <div class="info-card">
-          <span class="label">Current beta focus</span>
-          <strong>Reliable recording, live rooms, believable routing</strong>
-          <p>That means ride saves, group ride continuity, spectator links, watch handoff, and trail routes that make sense.</p>
+          <span class="label">Best first report</span>
+          <strong>Device, build, feature, and what happened</strong>
+          <p>Clear ride context helps us reproduce issues instead of guessing from a screenshot.</p>
         </div>
       </div>
     </section>
@@ -87,21 +88,21 @@
         <p class="eyebrow">Contact</p>
         <h2>How to reach us with the details that actually help.</h2>
         <p>
-          The fastest way to get useful help is to send the right context the first time. Start with support for
-          install help, ride recording issues, group ride problems, weak-service weirdness, or bug follow-up.
-          Use the privacy page when the question is specifically about data use, access, correction, or deletion.
+          Start with support for install help, ride recording issues, Group Ride problems, weak-service weirdness,
+          spectator or shared ride link bugs, or general product questions. Use the privacy page when the question is
+          specifically about data use, access, correction, or deletion.
         </p>
       </div>
       <div class="support-grid">
         <article class="support-card reveal">
           <span class="label">Support email</span>
           <h3><a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a></h3>
-          <p>Use this for beta help, bug reports, ride review questions, and follow-up after a real ride.</p>
+          <p>Use this for app help, bug reports, ride review questions, and follow-up after a real ride.</p>
         </article>
         <article class="support-card reveal">
-          <span class="label">TestFlight beta</span>
-          <h3><a href="https://testflight.apple.com/join/CxDbc7Bt" target="_blank" rel="noreferrer" data-testflight-link>Join the current beta</a></h3>
-          <p>Install the latest iPhone beta through TestFlight before sending ride feedback or reproduction steps.</p>
+          <span class="label">Download help</span>
+          <h3><a href="#download" data-app-store-link>Get TrackItMX</a></h3>
+          <p>Use the public App Store path when it is connected, or email support if the link does not resolve.</p>
         </article>
         <article class="support-card reveal">
           <span class="label">Privacy requests</span>
@@ -118,11 +119,11 @@
         <ul class="bullet-list">
           <li>Device model</li>
           <li>iOS version</li>
-          <li>TrackItMX build number, if visible</li>
+          <li>TrackItMX app version and build number, if visible</li>
           <li>Whether Apple Watch or CarPlay was involved</li>
           <li>Whether the issue happened in the app or on the web spectator page</li>
           <li>Whether service was strong, weak, or basically gone</li>
-          <li>Whether the link was a group invite, spectator invite, or place link</li>
+          <li>Whether the link was a Group Ride invite, spectator invite, place link, or shared ride link</li>
           <li>Whether the app was in the background</li>
           <li>Whether the ride was phone-only or watch-linked</li>
           <li>What you expected to happen</li>
@@ -154,18 +155,17 @@
       </div>
       <div class="faq-list">
         <details class="faq-item reveal">
-          <summary>What devices does TrackItMX support right now?</summary>
+          <summary>What devices does TrackItMX support?</summary>
           <p>
-            TrackItMX is centered on iPhone today, with Apple Watch companion behavior and CarPlay navigation in active
-            beta work. Android is planned after the iPhone beta foundation is stable enough to expand well.
+            TrackItMX is centered on iPhone, with Apple Watch companion behavior and CarPlay navigation support where
+            available. Android is planned after the iPhone launch foundation is stable enough to expand well.
           </p>
         </details>
         <details class="faq-item reveal">
           <summary>Does TrackItMX work without cell service?</summary>
           <p>
-            Core navigation and ride recording flows are being built with low-service riding in mind. Cloud-backed
-            features like live group rooms, spectator links, sharing, backup, restore, and some syncing still need
-            network access. Weak-service Group Ride is active beta work, not a finished promise yet.
+            Core location and ride recording behavior is built with low-service riding in mind. Cloud-backed features
+            like live Group Ride rooms, spectator links, sharing, backup, restore, and some syncing still need network access.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -173,6 +173,14 @@
           <p>
             Yes. Shared spectator links can open on the web, so a non-iPhone user can still watch the live map and
             room presence from the browser when the room is active and connected.
+          </p>
+        </details>
+        <details id="shared-rides" class="faq-item reveal">
+          <summary>What is a shared ride link?</summary>
+          <p>
+            A shared ride link is a private web link created from a saved TrackItMX ride. It can show the route,
+            selected metrics, and key moments without posting the ride to a public board. Anyone with the link can view
+            it until it expires or the rider turns sharing off.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -187,14 +195,6 @@
           <p>
             Tell us whether the ride was phone-only or watch-linked, whether the app went to the background, what trail
             or route context mattered, whether service was weak, and what you expected to happen instead of what actually did.
-          </p>
-        </details>
-        <details class="faq-item reveal">
-          <summary>What beta feedback matters most right now?</summary>
-          <p>
-            The highest-value notes right now are lost or confusing saves, trail versus lap confusion, rider rooms that
-            go stale, spectator links that open the wrong path, watch handoff weirdness, and routes that obviously do
-            not respect the trail access riders use.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -235,16 +235,15 @@
           <h3>The companion flow looks stale or disconnected</h3>
           <p>
             Check that the watch is paired, the watch app is installed, and the phone stays nearby long enough for the
-            bridge to settle if you are testing watch-linked ride or live behavior.
+            bridge to settle if you are using watch-linked ride or live behavior.
           </p>
         </article>
         <article class="support-card reveal">
           <span class="label">Group Ride</span>
           <h3>Live rider presence looks stale or missing</h3>
           <p>
-            Group Ride depends on permissions and connectivity. If the live source was watch-led, temporarily keeping the
-            phone nearby may help while the room catches back up. Tell us whether the room was in weak service, because
-            that is still an active hardening area.
+            Group Ride depends on permissions and connectivity. If the live source was watch-linked, keeping the phone
+            nearby may help while the room catches back up. Tell us whether the room was in weak service.
           </p>
         </article>
         <article class="support-card reveal">
@@ -253,6 +252,14 @@
           <p>
             Reload the page once, confirm the room code is correct, and note the browser and device you were using if
             riders or the map still do not look right. If the link opened the wrong path, tell us exactly which link type you used.
+          </p>
+        </article>
+        <article class="support-card reveal">
+          <span class="label">Shared Ride</span>
+          <h3>A private ride link will not open</h3>
+          <p>
+            Private ride links can expire or be revoked by the rider. Ask for a fresh link if the page says the ride is
+            unavailable, and send support the browser, device, and full link path if a new link still opens the wrong page.
           </p>
         </article>
         <article class="support-card reveal">
@@ -299,7 +306,7 @@
         <p class="eyebrow">Privacy and data</p>
         <h2>Need privacy details or request paths?</h2>
         <p>
-          Use the privacy page for location data, ride telemetry, group ride presence, optional health signals,
+          Use the privacy page for location data, ride telemetry, Group Ride presence, optional health signals,
           analytics context, and request guidance.
         </p>
         <a class="button button--secondary" href="../privacy/">Open privacy policy</a>
@@ -312,13 +319,15 @@
       <img src="../assets/trackitmx-mark.png" alt="" aria-hidden="true">
       <div>
         <strong data-site-name>TrackItMX</strong>
-        <p>Support, beta help, and rider feedback.</p>
+        <p>Support, ride help, and rider feedback.</p>
       </div>
     </div>
     <div class="footer__links">
       <a href="../">Home</a>
       <a href="../privacy/">Privacy</a>
+      <a href="../terms/">Terms</a>
       <a href="../group-ride/live/">Spectator</a>
+      <a href="#shared-rides">Shared Rides</a>
       <a href="mailto:support@trackitmx.com" data-support-link data-support-email>support@trackitmx.com</a>
     </div>
   </footer>

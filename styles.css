@@ -459,26 +459,6 @@ p {
   text-transform: uppercase;
 }
 
-.beta-spotlight__panel {
-  padding: 28px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow);
-}
-
-.beta-spotlight__panel p:not(.eyebrow):not(.beta-spotlight__note) {
-  max-width: 62ch;
-  margin-top: 16px;
-  color: var(--text-soft);
-  font-size: 1.04rem;
-}
-
-.beta-spotlight__note {
-  margin-top: 16px;
-  color: var(--text-dim);
-  font-size: 0.88rem;
-}
-
 .spectator-panel,
 .spectator-room {
   display: grid;
@@ -1202,7 +1182,10 @@ p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.beta-spotlight__panel,
+.resources--quad {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .resource-card--accent,
 .final-cta__panel {
   background:
@@ -1262,15 +1245,311 @@ p {
   transform: translateY(0);
 }
 
+.ride-viewer-main {
+  width: min(1480px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 20px 0 64px;
+}
+
+.page--ride-viewer .topbar {
+  width: min(1480px, calc(100vw - 28px));
+}
+
+.ride-viewer-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.ride-viewer-head,
+.ride-viewer-map-card,
+.ride-viewer-panel,
+.ride-viewer-card,
+.ride-moment,
+.ride-stat-card {
+  border: 1px solid var(--line-strong);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0)),
+    rgba(14, 10, 8, 0.88);
+  box-shadow: var(--shadow);
+}
+
+.ride-viewer-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+}
+
+.ride-viewer-copy {
+  display: grid;
+  gap: 10px;
+  max-width: 920px;
+}
+
+.ride-viewer-copy h1 {
+  font-size: clamp(2.1rem, 5vw, 4.7rem);
+}
+
+.ride-viewer-summary,
+.ride-viewer-muted {
+  color: var(--text-soft);
+}
+
+.ride-viewer-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ride-viewer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.ride-viewer-map-card {
+  position: relative;
+  min-height: clamp(540px, 74vh, 900px);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: #110b08;
+}
+
+.ride-map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.ride-map-toolbar {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 460;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: calc(100% - 36px);
+}
+
+.ride-map .leaflet-control-zoom a,
+.ride-map .leaflet-control-attribution {
+  background: rgba(12, 9, 8, 0.9);
+  color: var(--text-soft);
+  border-color: rgba(212, 173, 123, 0.2);
+}
+
+.ride-map .leaflet-top.leaflet-left {
+  top: 72px;
+}
+
+.ride-map .leaflet-popup-content-wrapper,
+.ride-map .leaflet-popup-tip {
+  background: rgba(12, 9, 8, 0.94);
+  color: var(--text);
+}
+
+.ride-map-marker-shell {
+  background: transparent;
+  border: 0;
+}
+
+.ride-map-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transform: translate(-50%, -50%);
+}
+
+.ride-map-marker__dot {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(7, 5, 4, 0.84);
+  border-radius: 999px;
+  background: var(--teal);
+  box-shadow:
+    0 0 0 8px rgba(39, 216, 188, 0.14),
+    0 12px 22px rgba(0, 0, 0, 0.24);
+}
+
+.ride-map-marker__label {
+  padding: 7px 11px;
+  border: 1px solid rgba(212, 173, 123, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 5, 4, 0.88);
+  color: var(--text);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.ride-map-marker--finish .ride-map-marker__dot {
+  background: var(--bone);
+  box-shadow: 0 0 0 8px rgba(242, 226, 203, 0.1);
+}
+
+.ride-map-marker--fix .ride-map-marker__dot {
+  background: #f4d17b;
+  box-shadow: 0 0 0 8px rgba(244, 209, 123, 0.14);
+}
+
+.ride-map-marker--best .ride-map-marker__dot {
+  background: #7be6c2;
+}
+
+.ride-viewer-panel {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+}
+
+.ride-viewer-panel h2 {
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.ride-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ride-stat-card {
+  min-width: 0;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+}
+
+.ride-stat-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--bone);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.ride-viewer-card {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+}
+
+.ride-viewer-card p {
+  margin-top: 10px;
+  color: var(--text-soft);
+}
+
+.ride-viewer-cta {
+  border-color: rgba(39, 216, 188, 0.22);
+  background:
+    linear-gradient(135deg, rgba(39, 216, 188, 0.12), rgba(255, 255, 255, 0.025) 42%, rgba(7, 5, 4, 0)),
+    rgba(11, 8, 7, 0.9);
+}
+
+.ride-viewer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.ride-viewer-actions .button {
+  min-height: 44px;
+  padding: 0.78rem 1rem;
+}
+
+.ride-viewer-moments {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0)),
+    rgba(9, 6, 5, 0.74);
+}
+
+.ride-viewer-moments .section-heading h2 {
+  margin-top: 8px;
+  font-size: clamp(1.9rem, 3.8vw, 3.6rem);
+}
+
+.ride-viewer-moments .section-heading p:not(.eyebrow) {
+  margin-top: 10px;
+}
+
+.ride-moments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.ride-moment {
+  cursor: default;
+  min-height: 150px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.ride-moment[tabindex] {
+  cursor: pointer;
+}
+
+.ride-moment[tabindex]:hover,
+.ride-moment[tabindex]:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(224, 166, 97, 0.46);
+  background-color: rgba(255, 255, 255, 0.025);
+}
+
+.ride-moment__type {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 7px 10px;
+  border: 1px solid rgba(212, 173, 123, 0.24);
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ride-moment strong {
+  display: block;
+  color: var(--bone);
+  font-size: 1.08rem;
+  line-height: 1.18;
+}
+
+.ride-moment p {
+  margin-top: 10px;
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1080px) {
   .hero,
   .page-hero,
   .product-stack,
   .resources,
   .resources--triple,
+  .resources--quad,
   .trust-panel,
   .spectator-panel,
-  .spectator-layout {
+  .spectator-layout,
+  .ride-viewer-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1291,6 +1570,14 @@ p {
 
   .spectator-riders--dock .spectator-riders__list {
     grid-template-columns: 1fr;
+  }
+
+  .ride-viewer-head {
+    grid-template-columns: 1fr;
+  }
+
+  .ride-viewer-pills {
+    justify-content: flex-start;
   }
 }
 
@@ -1331,9 +1618,9 @@ p {
   }
 
   .page--home .hero h1 {
-    max-width: 10ch;
-    font-size: clamp(2.28rem, 12.2vw, 3.55rem);
-    line-height: 0.94;
+    max-width: 11.5ch;
+    font-size: clamp(2.1rem, 10.8vw, 3.25rem);
+    line-height: 0.96;
   }
 
   .topbar .button {
@@ -1413,6 +1700,41 @@ p {
     top: 14px;
     left: 14px;
     max-width: calc(100% - 28px);
+  }
+
+  .ride-viewer-main {
+    width: min(100vw - 20px, 720px);
+    padding-top: 10px;
+  }
+
+  .page--ride-viewer .topbar {
+    width: min(100vw - 20px, 720px);
+  }
+
+  .ride-viewer-head,
+  .ride-viewer-panel,
+  .ride-viewer-moments {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .ride-viewer-map-card {
+    min-height: 58vh;
+    border-radius: 24px;
+  }
+
+  .ride-map-toolbar {
+    top: 14px;
+    left: 14px;
+    max-width: calc(100% - 28px);
+  }
+
+  .ride-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ride-moments-list {
+    grid-template-columns: 1fr;
   }
 
   .spectator-map-stage__actions,

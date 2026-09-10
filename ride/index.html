@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrackItMX Shared Ride</title>
+  <meta
+    name="description"
+    content="Open a private TrackItMX ride link to view the shared route, ride stats, and key moments."
+  >
+  <meta name="theme-color" content="#070504">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta property="og:title" content="TrackItMX Shared Ride">
+  <meta
+    property="og:description"
+    content="View a private TrackItMX ride route, stats, and key moments from a shared link."
+  >
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://trackitmx.com/ride/">
+  <meta property="og:image" content="https://trackitmx.com/assets/trackitmx-mark.png">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:image:alt" content="TrackItMX app icon">
+  <link rel="icon" type="image/png" href="../assets/trackitmx-mark.png">
+  <link rel="apple-touch-icon" href="../assets/trackitmx-mark.png">
+  <link rel="canonical" href="https://trackitmx.com/ride/">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="stylesheet" href="../styles.css?v=20260910">
+  <script defer src="../site-config.js"></script>
+  <script defer src="../app.js"></script>
+  <script defer src="../analytics-config.js"></script>
+  <script src="../runtime-config.js"></script>
+  <script type="module" src="./ride.js"></script>
+</head>
+<body class="page page--inner page--ride-viewer">
+  <div class="site-grit" aria-hidden="true"></div>
+  <noscript>
+    <div class="section">
+      <div class="info-card">
+        TrackItMX shared ride links need JavaScript to load the private ride map and metrics.
+      </div>
+    </div>
+  </noscript>
+
+  <header class="topbar topbar--ride-viewer">
+    <a class="brand-lockup" href="../" aria-label="TrackItMX home">
+      <img class="brand-lockup__mark" src="../assets/trackitmx-mark.png" alt="">
+      <span class="brand-lockup__text">
+        <strong>TrackIt<span>MX</span></strong>
+        <small>Shared Ride</small>
+      </span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="../">Home</a>
+      <a href="../support/">Support</a>
+      <a href="../privacy/">Privacy</a>
+      <a href="../terms/">Terms</a>
+    </nav>
+  </header>
+
+  <main class="ride-viewer-main">
+    <section class="ride-viewer-shell reveal" aria-label="Shared ride viewer">
+      <div class="ride-viewer-head">
+        <div class="ride-viewer-copy">
+          <p class="eyebrow">Private ride link</p>
+          <h1 id="ride-title">Opening ride.</h1>
+          <p id="ride-summary" class="ride-viewer-summary">Loading the route and ride details.</p>
+        </div>
+        <div id="ride-pill-row" class="ride-viewer-pills" aria-label="Ride status">
+          <span class="spectator-pill">Unlisted</span>
+          <span class="spectator-pill">Private link</span>
+        </div>
+      </div>
+
+      <section class="ride-viewer-grid">
+        <div class="ride-viewer-map-card" aria-label="Ride map">
+          <div class="ride-map-toolbar" role="group" aria-label="Map controls">
+            <button class="button button--ghost spectator-map-toolbar__button is-active" type="button" data-map-mode="hybrid" aria-pressed="true">Hybrid</button>
+            <button class="button button--ghost spectator-map-toolbar__button" type="button" data-map-mode="road" aria-pressed="false">Map</button>
+            <button id="fit-ride" class="button button--ghost spectator-map-toolbar__button" type="button">Fit Ride</button>
+          </div>
+          <div id="ride-map" class="ride-map" aria-label="Shared ride route map"></div>
+          <div id="ride-map-empty" class="spectator-field__empty">Loading the map.</div>
+        </div>
+
+        <aside class="ride-viewer-panel" aria-label="Ride details">
+          <div>
+            <p class="eyebrow">Ride read</p>
+            <h2 id="ride-read-title">Shared metrics</h2>
+            <p id="ride-read-summary" class="ride-viewer-muted">Only the details chosen for this share are visible here.</p>
+          </div>
+
+          <div id="ride-stats" class="ride-stat-grid" aria-label="Ride stats"></div>
+
+          <section class="ride-viewer-card ride-viewer-cta">
+            <span class="label">TrackItMX</span>
+            <p>Record the ride, keep the line, and share the good parts without dumping your whole day online.</p>
+            <div class="ride-viewer-actions">
+              <a class="button button--primary" href="../support/#download" data-app-store-link>Get TrackItMX</a>
+              <a class="button button--secondary" href="../">See the app</a>
+            </div>
+          </section>
+
+          <section class="ride-viewer-card ride-viewer-card--compact">
+            <span class="label">Privacy</span>
+            <p>
+              This ride is not listed publicly. Anyone with the link can view it until it expires or the owner revokes it.
+            </p>
+          </section>
+        </aside>
+      </section>
+
+      <section class="ride-viewer-moments" aria-label="Key moments">
+        <div class="section-heading">
+          <p class="eyebrow">Key moments</p>
+          <h2>Useful spots, not clutter.</h2>
+          <p>TrackItMX keeps this share readable: the whole route is on the map, and the list below stays focused on the most useful sections.</p>
+        </div>
+        <div id="ride-moments-list" class="ride-moments-list"></div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

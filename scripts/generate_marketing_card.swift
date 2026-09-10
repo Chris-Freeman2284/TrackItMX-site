@@ -146,7 +146,7 @@ let pillAttributes: [NSAttributedString.Key: Any] = [
     .foregroundColor: color(0x1a120d)
 ]
 
-NSString(string: "TRACKITMX BETA").draw(in: NSRect(x: 396, y: 500, width: 300, height: 28), withAttributes: eyebrowAttributes)
+NSString(string: "TRACKITMX").draw(in: NSRect(x: 396, y: 500, width: 300, height: 28), withAttributes: eyebrowAttributes)
 
 NSString(string: "Record every ride.\nReview what mattered.\nRide better next time.").draw(
     in: NSRect(x: 392, y: 286, width: 670, height: 204),
@@ -160,7 +160,7 @@ NSString(string: "Trail-first navigation, trusted ride recording, post-ride revi
 
 let pillRect = NSRect(x: 396, y: 108, width: 228, height: 42)
 drawRoundedRect(pillRect, radius: 21, fill: color(0xc58a53))
-NSString(string: "iPhone beta on TestFlight").draw(
+NSString(string: "Built for iPhone").draw(
     in: NSRect(x: pillRect.minX + 17, y: pillRect.minY + 10, width: pillRect.width - 34, height: 22),
     withAttributes: pillAttributes
 )
@@ -170,7 +170,7 @@ NSString(string: "trackitmx.com").draw(
     withAttributes: metaAttributes
 )
 
-NSString(string: "Navigation  •  Group ride  •  Watch + CarPlay beta").draw(
+NSString(string: "Recording  •  Review  •  Group Ride  •  Watch + CarPlay").draw(
     in: NSRect(x: 632, y: 72, width: 430, height: 22),
     withAttributes: metaAttributes
 )
