@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20260910">
+  <link rel="stylesheet" href="styles.css?v=20260910c">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -53,10 +53,10 @@
     <nav class="topnav" aria-label="Primary">
       <a href="#features">Features</a>
       <a href="#ride-loop">Ride Loop</a>
+      <a href="#web-links">Web Links</a>
       <a href="#crew">Crew</a>
       <a href="#faq">FAQ</a>
       <a href="support/">Support</a>
-      <a href="privacy/">Privacy</a>
     </nav>
     <a
       class="button button--ghost"
@@ -97,20 +97,86 @@
           <span>Garage and setup memory</span>
         </div>
       </div>
+      <aside class="hero__visual reveal" aria-label="TrackItMX product preview">
+        <div class="app-preview">
+          <div class="app-preview__header">
+            <img src="assets/trackitmx-mark.png" alt="" aria-hidden="true">
+            <div>
+              <span class="label">Ride command</span>
+              <strong>Trail day in one view</strong>
+            </div>
+          </div>
+          <div class="app-preview__screen">
+            <div class="mock-map" aria-hidden="true">
+              <svg viewBox="0 0 320 250" role="img" aria-label="Stylized ride route preview">
+                <path class="mock-map__route mock-map__route--shadow" d="M31 199 C83 162 56 105 116 96 C169 88 151 40 214 55 C265 67 243 125 292 141" />
+                <path class="mock-map__route" d="M31 199 C83 162 56 105 116 96 C169 88 151 40 214 55 C265 67 243 125 292 141" />
+                <circle class="mock-map__point mock-map__point--start" cx="31" cy="199" r="8" />
+                <circle class="mock-map__point mock-map__point--finish" cx="292" cy="141" r="8" />
+                <circle class="mock-map__point mock-map__point--rider" cx="184" cy="64" r="10" />
+              </svg>
+              <span class="mock-map__tag mock-map__tag--top">Group Ride</span>
+              <span class="mock-map__tag mock-map__tag--bottom">Route saved</span>
+            </div>
+            <div class="app-preview__cards">
+              <div class="app-mini-card">
+                <span>Recording</span>
+                <strong>Route, timing, movement</strong>
+              </div>
+              <div class="app-mini-card">
+                <span>Review</span>
+                <strong>Pace, flow, setup notes</strong>
+              </div>
+              <div class="app-mini-card">
+                <span>Crew</span>
+                <strong>Live room and web links</strong>
+              </div>
+            </div>
+          </div>
+          <div class="app-preview__footer">
+            <span>iPhone</span>
+            <span>Watch</span>
+            <span>CarPlay</span>
+            <span>Web</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="signal-band launch-strip reveal" aria-label="TrackItMX at a glance">
+      <article>
+        <span class="label">Before</span>
+        <strong>Find the trail</strong>
+        <p>Map context and route handoff before the ride starts.</p>
+      </article>
+      <article>
+        <span class="label">During</span>
+        <strong>Record the truth</strong>
+        <p>Capture the session while keeping the crew picture simple.</p>
+      </article>
+      <article>
+        <span class="label">After</span>
+        <strong>Read the ride</strong>
+        <p>Turn the route and events into useful review.</p>
+      </article>
+      <article>
+        <span class="label">Next</span>
+        <strong>Carry it forward</strong>
+        <p>Keep setup memory and ride context together.</p>
+      </article>
     </section>
 
     <section id="features" class="section">
       <div class="section-heading reveal">
         <p class="eyebrow">Why TrackItMX</p>
-        <h2>Not just another trail map. A memory bank for your rides.</h2>
+        <h2>Every ride leaves clues. TrackItMX keeps them together.</h2>
         <p>
-          Most apps help you find a trail. TrackItMX is built for what happens before, during, and after the ride:
-          planning the route, recording the session, reviewing what happened, remembering bike setup, and improving
-          the next time out.
+          TrackItMX is built for riders who want the route, the recording, the crew, and the setup context in one place.
+          Navigation matters. The bigger win is remembering what happened and making the next ride less of a guess.
         </p>
       </div>
       <div class="feature-grid">
-        <article class="feature-card reveal">
+        <article class="feature-card feature-card--featured reveal">
           <span class="feature-card__tag">Recording</span>
           <h3>Ride recording you can trust</h3>
           <p>Start the ride, keep moving, and save the session with reliability treated as the core feature, not an afterthought.</p>
@@ -118,7 +184,7 @@
         <article class="feature-card reveal">
           <span class="feature-card__tag">Review</span>
           <h3>Review that explains the ride</h3>
-          <p>Turn ride data into useful takeaways around pace, consistency, traction, drive, and session flow without pretending the data says more than it does.</p>
+          <p>Use ride data for grounded takeaways around pace, consistency, traction, drive, and session flow.</p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Garage</span>
@@ -176,13 +242,34 @@
       </div>
     </section>
 
+    <section class="section audience-panel">
+      <div class="audience-panel__copy reveal">
+        <p class="eyebrow">Built for real off-road use</p>
+        <h2>Dirt bikes, SxS, ATV, trucks, and crews that actually ride.</h2>
+        <p>
+          TrackItMX is not trying to be a city map with mud on it. It is for riders who care about where they went,
+          how the ride unfolded, what setup they were on, and who was still moving with the group.
+        </p>
+      </div>
+      <div class="audience-panel__tags reveal" aria-label="TrackItMX rider types">
+        <span>Dirt bike sessions</span>
+        <span>SxS trail days</span>
+        <span>ATV rides</span>
+        <span>Truck-to-trail routes</span>
+        <span>Family spectators</span>
+        <span>Pit crew and friends</span>
+        <span>Garage setup notes</span>
+        <span>Low-service ride areas</span>
+      </div>
+    </section>
+
     <section id="crew" class="section product-stack">
       <div class="product-stack__copy reveal">
         <p class="eyebrow">More than a solo tracker</p>
-        <h2>Built in the garage, useful on the trail, readable after the ride.</h2>
+        <h2>The app, the web, and the garage all point at the same ride.</h2>
         <p>
-          TrackItMX keeps the product practical: map first, ride truth first, and no giant promises that collapse
-          when service gets bad or a rider locks their phone.
+          iPhone is the core ride experience. Watch, CarPlay, spectator links, shared ride recaps, and garage context
+          are there to support the same job: make the ride easier to run, understand, and remember.
         </p>
       </div>
       <div class="platform-grid">
@@ -199,7 +286,7 @@
         <article class="platform-card reveal">
           <span class="label">Spectator</span>
           <strong>Follow from a browser.</strong>
-          <p>Shared spectator links can open a live map on the web so friends, family, or pit crew do not need the iPhone app.</p>
+          <p>Shared spectator links can open a live map on the web so friends, family, or pit crew do not need the app.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">Apple Watch</span>
@@ -215,6 +302,37 @@
           <span class="label">Ride Coach + Mechanic</span>
           <strong>Grounded help from ride and setup context.</strong>
           <p>Coach and garage guidance use available app context to suggest useful next steps, not magic answers or safety guarantees.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="web-links" class="section web-links">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Website features</p>
+        <h2>Links that make sense when not everyone has the app.</h2>
+        <p>
+          TrackItMX web routes are built as part of the product, not as leftover landing pages. A shared link should
+          take riders, spectators, and friends to the right place fast.
+        </p>
+      </div>
+      <div class="web-links__grid">
+        <article class="web-card web-card--primary reveal">
+          <span class="label">Live spectator</span>
+          <h3>Watch a Group Ride room from the browser.</h3>
+          <p>Open a room code, see the map, and follow rider presence when the room is active and connected.</p>
+          <a class="button button--secondary" href="group-ride/live/">Open spectator map</a>
+        </article>
+        <article class="web-card reveal">
+          <span class="label">Private ride share</span>
+          <h3>Open a saved ride recap from a private link.</h3>
+          <p>Shared ride links can show selected route, metrics, and moments without listing the ride publicly.</p>
+          <a class="button button--secondary" href="support/#shared-rides">How ride links work</a>
+        </article>
+        <article class="web-card reveal">
+          <span class="label">App handoff</span>
+          <h3>Invites, places, and rides land in the right flow.</h3>
+          <p>TrackItMX links support app handoff first, with clean browser fallback paths where the web should help.</p>
+          <a class="button button--secondary" href="support/">Get link help</a>
         </article>
       </div>
     </section>
@@ -310,7 +428,7 @@
       </div>
     </section>
 
-    <section class="section resources resources--quad">
+    <section class="section resources resources--triple">
       <div class="resource-card reveal">
         <p class="eyebrow">Support</p>
         <h2>Need help or a human answer?</h2>
@@ -324,16 +442,10 @@
         <a class="button button--secondary" href="privacy/">Read Privacy</a>
       </div>
       <div class="resource-card reveal">
-        <p class="eyebrow">Spectator</p>
-        <h2>Follow a ride from any device.</h2>
-        <p>Shared room links can open on the web with a live map, crew presence, and room context when the ride is active.</p>
-        <a class="button button--secondary" href="group-ride/live/">Open spectator page</a>
-      </div>
-      <div class="resource-card reveal">
-        <p class="eyebrow">Shared rides</p>
-        <h2>Open a ride recap from a private link.</h2>
-        <p>Saved ride links can show the shared route, metrics, and key moments without listing that ride publicly.</p>
-        <a class="button button--secondary" href="support/#shared-rides">How ride links work</a>
+        <p class="eyebrow">Terms</p>
+        <h2>Want the plain-language rules?</h2>
+        <p>Read the off-road risk, sharing, navigation, ride data, and emergency-response limits in one place.</p>
+        <a class="button button--secondary" href="terms/">Read Terms</a>
       </div>
     </section>
 
