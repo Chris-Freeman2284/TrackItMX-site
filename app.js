@@ -51,6 +51,12 @@ syncPublicConstants();
 
 const revealNodes = document.querySelectorAll(".reveal");
 
+const isAlreadyInView = (node) => {
+  const rect = node.getBoundingClientRect();
+
+  return rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+};
+
 if ("IntersectionObserver" in window) {
   const revealObserver = new IntersectionObserver(
     (entries) => {
@@ -68,6 +74,11 @@ if ("IntersectionObserver" in window) {
   );
 
   revealNodes.forEach((node) => {
+    if (isAlreadyInView(node)) {
+      node.classList.add("is-visible");
+      return;
+    }
+
     revealObserver.observe(node);
   });
 } else {

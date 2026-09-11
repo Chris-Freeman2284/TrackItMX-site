@@ -462,25 +462,30 @@ h3,
 h1 {
   margin: 0;
   font-size: clamp(3rem, 6vw, 6.4rem);
-  line-height: 0.92;
+  line-height: 0.98;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 h2 {
   margin: 0;
   font-size: clamp(2rem, 3.8vw, 4.2rem);
-  line-height: 0.96;
+  line-height: 1.02;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 h3 {
   margin: 0 0 12px;
   font-size: 1.22rem;
+  line-height: 1.12;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 p {
   margin: 0;
+  text-wrap: pretty;
 }
 
 .hero__lede,
@@ -503,6 +508,16 @@ p {
 .hero__lede {
   max-width: 60ch;
   margin-top: 20px;
+}
+
+.eyebrow + h1,
+.eyebrow + h2 {
+  margin-top: 12px;
+}
+
+.label + h3,
+.feature-card__tag + h3 {
+  margin-top: 12px;
 }
 
 .hero__actions {
@@ -538,6 +553,7 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
   min-height: 52px;
   padding: 0 22px;
   border: 1px solid var(--line-strong);
@@ -597,6 +613,7 @@ p {
   color: var(--text-soft);
   font-size: 0.82rem;
   letter-spacing: 0.16em;
+  line-height: 1.2;
   text-transform: uppercase;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   text-align: center;
@@ -1238,6 +1255,8 @@ p {
 }
 
 .section-heading {
+  display: grid;
+  gap: 14px;
   max-width: 760px;
 }
 
@@ -1409,6 +1428,17 @@ p {
   margin-top: auto;
 }
 
+.ride-viewer-actions,
+.hero__actions {
+  row-gap: 12px;
+}
+
+.resource-card .button,
+.trust-panel__details .button {
+  justify-self: start;
+  margin-top: 8px;
+}
+
 .web-card--primary {
   border-color: rgba(39, 216, 188, 0.24);
   background:
@@ -1558,6 +1588,16 @@ p {
 .js .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.js .hero > .reveal,
+.js .page-hero > .reveal,
+.js .spectator-entry__panel.reveal,
+.js .spectator-map-stage.reveal,
+.js .ride-viewer-shell.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 .ride-viewer-main {
@@ -1852,6 +1892,41 @@ p {
   margin-top: 10px;
   color: var(--text-soft);
   overflow-wrap: anywhere;
+}
+
+@media (max-width: 1180px) {
+  .topbar {
+    gap: 14px;
+  }
+
+  .topnav {
+    gap: 10px 16px;
+    font-size: 0.84rem;
+  }
+
+  .brand-lockup__mark {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+  }
+
+  .topbar .button {
+    min-height: 46px;
+    padding: 0 16px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .topnav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 1080px) {

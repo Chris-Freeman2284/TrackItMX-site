@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20260910c">
+  <link rel="stylesheet" href="styles.css?v=20260911">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -83,8 +83,8 @@
           <a class="button button--secondary" href="#ride-loop">See how it works</a>
         </div>
         <p class="hero__note">
-          Built for iPhone first, with Apple Watch companion flows and CarPlay navigation support where available.
-          Android is planned after the iPhone launch foundation is stable enough to expand well.
+          Built for iPhone, with Apple Watch support and CarPlay navigation where available.
+          Android support is planned for a later release.
         </p>
         <div class="chip-row" aria-label="TrackItMX feature highlights">
           <span>Trail-first navigation</span>
@@ -121,15 +121,15 @@
             <div class="app-preview__cards">
               <div class="app-mini-card">
                 <span>Recording</span>
-                <strong>Route, timing, movement</strong>
+                <strong>Route saved</strong>
               </div>
               <div class="app-mini-card">
                 <span>Review</span>
-                <strong>Pace, flow, setup notes</strong>
+                <strong>Pace and flow</strong>
               </div>
               <div class="app-mini-card">
                 <span>Crew</span>
-                <strong>Live room and web links</strong>
+                <strong>Live map</strong>
               </div>
             </div>
           </div>
@@ -147,12 +147,12 @@
       <article>
         <span class="label">Before</span>
         <strong>Find the trail</strong>
-        <p>Map context and route handoff before the ride starts.</p>
+        <p>Plan where you are headed before the ride starts.</p>
       </article>
       <article>
         <span class="label">During</span>
-        <strong>Record the truth</strong>
-        <p>Capture the session while keeping the crew picture simple.</p>
+        <strong>Record the ride</strong>
+        <p>Capture the session while keeping your crew in view.</p>
       </article>
       <article>
         <span class="label">After</span>
@@ -194,12 +194,12 @@
         <article class="feature-card reveal">
           <span class="feature-card__tag">Crew</span>
           <h3>Crew visibility</h3>
-          <p>Create or join Group Ride rooms, see live rider presence when connected, and keep the crew signal simple.</p>
+          <p>Create or join Group Ride rooms and see where riders are when the room is connected.</p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Apple stack</span>
           <h3>Built around the Apple ride stack</h3>
-          <p>iPhone is the core experience, with Apple Watch companion support and CarPlay route handoff where available.</p>
+          <p>iPhone is the core experience, with Apple Watch companion support and CarPlay navigation where available.</p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Sharing</span>
@@ -247,7 +247,7 @@
         <p class="eyebrow">Built for real off-road use</p>
         <h2>Dirt bikes, SxS, ATV, trucks, and crews that actually ride.</h2>
         <p>
-          TrackItMX is not trying to be a city map with mud on it. It is for riders who care about where they went,
+          TrackItMX is made for riders who care about where they went,
           how the ride unfolded, what setup they were on, and who was still moving with the group.
         </p>
       </div>
@@ -280,7 +280,7 @@
         </article>
         <article class="platform-card reveal">
           <span class="label">Group Ride</span>
-          <strong>Live rooms for connected crews.</strong>
+          <strong>Live rooms for riding with a crew.</strong>
           <p>Create or join rooms, see rider presence, and keep the group picture simple when network conditions allow.</p>
         </article>
         <article class="platform-card reveal">
@@ -295,13 +295,13 @@
         </article>
         <article class="platform-card reveal">
           <span class="label">CarPlay</span>
-          <strong>Cleaner truck-to-trail handoff.</strong>
+          <strong>Cleaner truck-to-trail navigation.</strong>
           <p>CarPlay support is focused on readable route behavior before the off-road part of the ride starts.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">Ride Coach + Mechanic</span>
           <strong>Grounded help from ride and setup context.</strong>
-          <p>Coach and garage guidance use available app context to suggest useful next steps, not magic answers or safety guarantees.</p>
+          <p>Coach and garage guidance uses ride history and setup notes to suggest practical next steps.</p>
         </article>
       </div>
     </section>
@@ -311,15 +311,15 @@
         <p class="eyebrow">Website features</p>
         <h2>Links that make sense when not everyone has the app.</h2>
         <p>
-          TrackItMX web routes are built as part of the product, not as leftover landing pages. A shared link should
-          take riders, spectators, and friends to the right place fast.
+          If someone does not have the app, shared links still give them a clean way to follow a live room,
+          open a place, or view a ride recap.
         </p>
       </div>
       <div class="web-links__grid">
         <article class="web-card web-card--primary reveal">
           <span class="label">Live spectator</span>
           <h3>Watch a Group Ride room from the browser.</h3>
-          <p>Open a room code, see the map, and follow rider presence when the room is active and connected.</p>
+          <p>Open a room code, see the map, and follow rider locations when the room is active.</p>
           <a class="button button--secondary" href="group-ride/live/">Open spectator map</a>
         </article>
         <article class="web-card reveal">
@@ -329,9 +329,9 @@
           <a class="button button--secondary" href="support/#shared-rides">How ride links work</a>
         </article>
         <article class="web-card reveal">
-          <span class="label">App handoff</span>
+          <span class="label">Smart links</span>
           <h3>Invites, places, and rides land in the right flow.</h3>
-          <p>TrackItMX links support app handoff first, with clean browser fallback paths where the web should help.</p>
+          <p>TrackItMX links can open the app when it is installed, or show a useful web page when the browser is the better path.</p>
           <a class="button button--secondary" href="support/">Get link help</a>
         </article>
       </div>
@@ -352,7 +352,7 @@
           <ul class="bullet-list trust-list">
             <li>Location and telemetry are used to power navigation, recording, review, and Group Ride features.</li>
             <li>Watch and health-related signals are optional and permission-based.</li>
-            <li>Cloud-backed features such as group rooms, sharing, restore, and backup may require network access.</li>
+            <li>Online features such as group rooms, sharing, restore, and backup may require network access.</li>
             <li>TrackItMX is not emergency rescue infrastructure. In a real emergency, use local emergency services.</li>
           </ul>
           <a class="button button--secondary" href="privacy/">Read the privacy policy</a>
@@ -369,22 +369,22 @@
         <details class="faq-item reveal">
           <summary>Where do I download TrackItMX?</summary>
           <p>
-            Use the Get TrackItMX buttons on this site. Once the public App Store listing is connected, those buttons
-            point directly to the TrackItMX App Store page.
+            Use the Get TrackItMX buttons on this site. Once the public App Store listing is available, those buttons
+            open the TrackItMX App Store page.
           </p>
         </details>
         <details class="faq-item reveal">
           <summary>What makes TrackItMX different?</summary>
           <p>
             TrackItMX is focused on the whole ride loop: get to the trail, record the session, review what happened,
-            remember setup context, and improve next time. Navigation matters, but the long-term product is ride memory
+            remember setup context, and improve next time. Navigation matters, but the bigger idea is ride memory
             and ride review for off-road riders.
           </p>
         </details>
         <details class="faq-item reveal">
           <summary>Does TrackItMX work without cell service?</summary>
           <p>
-            Core location and recording behavior is built with low-service riding in mind. Cloud-backed features like
+            Core location and recording behavior is built with low-service riding in mind. Online features like
             live Group Ride rooms, spectator links, sharing, backup, restore, and some syncing still need network access.
           </p>
         </details>
@@ -405,8 +405,8 @@
         <details class="faq-item reveal">
           <summary>How do Ride Coach and Mechanic work?</summary>
           <p>
-            TrackItMX uses available ride and garage context to surface grounded coaching and setup guidance. The goal is
-            useful direction from your own ride history, not vague AI hype or professional mechanical advice.
+            TrackItMX uses ride history and garage notes to offer practical, informational coaching and setup guidance.
+            It is not a replacement for professional riding instruction, mechanical work, or your OEM service manual.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -423,7 +423,7 @@
         </details>
         <details class="faq-item reveal">
           <summary>Is Android coming?</summary>
-          <p>Android is planned after the iPhone launch foundation is stable enough to expand well.</p>
+          <p>Yes. Android support is planned for a later release.</p>
         </details>
       </div>
     </section>
