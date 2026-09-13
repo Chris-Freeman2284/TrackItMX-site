@@ -25,7 +25,7 @@ TrackItMX is built for practical ride use:
 - Off-road trail lookup and route context
 - Ride recording for trail and lap-style sessions
 - Post-ride review and session history
-- Group Ride rooms and live rider presence
+- Group Ride rooms and live rider locations
 - Web spectator links for active rooms
 - Apple Watch companion ride context where available
 - CarPlay navigation support where available

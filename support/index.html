@@ -22,10 +22,10 @@
   <link rel="apple-touch-icon" href="../assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/support/">
   <link rel="manifest" href="../site.webmanifest">
-  <link rel="stylesheet" href="../styles.css?v=20260911">
-  <script defer src="../site-config.js"></script>
-  <script defer src="../app.js"></script>
-  <script defer src="../analytics-config.js"></script>
+  <link rel="stylesheet" href="../styles.css?v=20260913">
+  <script defer src="../site-config.js?v=20260913"></script>
+  <script defer src="../app.js?v=20260913"></script>
+  <script defer src="../analytics-config.js?v=20260913"></script>
 </head>
 <body class="page page--inner">
   <div class="site-grit" aria-hidden="true"></div>
@@ -76,8 +76,8 @@
           <p>Use the App Store download path for the public iPhone release. If something does not open correctly, email support.</p>
         </div>
         <div class="info-card">
-          <span class="label">Best first report</span>
-          <strong>Device, build, feature, and what happened</strong>
+          <span class="label">Helpful details</span>
+          <strong>Device, app version, feature, and what happened</strong>
           <p>A few clear details help us track down the issue faster.</p>
         </div>
       </div>
@@ -86,7 +86,7 @@
     <section id="contact" class="section">
       <div class="section-heading reveal">
         <p class="eyebrow">Contact</p>
-        <h2>How to reach us with the details that actually help.</h2>
+        <h2>Send a note with the details that matter.</h2>
         <p>
           Start with support for install help, ride recording issues, Group Ride problems, poor-service areas,
           spectator or shared ride link bugs, or general product questions. Use the privacy page when the question is
@@ -114,18 +114,18 @@
 
     <section id="bug-report" class="section resources">
       <div class="resource-card resource-card--accent reveal">
-        <p class="eyebrow">Bug report checklist</p>
-        <h2>When reporting a bug, include:</h2>
+        <p class="eyebrow">Report a problem</p>
+        <h2>Helpful details to include:</h2>
         <ul class="bullet-list">
           <li>Device model</li>
           <li>iOS version</li>
           <li>TrackItMX app version and build number, if visible</li>
           <li>Whether Apple Watch or CarPlay was involved</li>
           <li>Whether the issue happened in the app or on the web spectator page</li>
-          <li>Whether service was strong, weak, or basically gone</li>
+          <li>Whether service was good, poor, or unavailable</li>
           <li>Whether the link was a Group Ride invite, spectator invite, place link, or shared ride link</li>
           <li>Whether the app was in the background</li>
-          <li>Whether the ride was phone-only or watch-linked</li>
+          <li>Whether the ride was phone-only or connected to Apple Watch</li>
           <li>What you expected to happen</li>
           <li>What actually happened</li>
           <li>Any trail, room, or ride details that help explain it</li>
@@ -135,8 +135,8 @@
         <p class="eyebrow">Real feedback helps</p>
         <h2>Send the messy ride version, not the cleaned-up one.</h2>
         <p>
-          The best reports come from real conditions: low service, a watch connection that felt weird, a save that did
-          not look right, a room that stopped feeling live, or a trail route that clearly did not respect how riders
+          The best reports come from real conditions: low service, an Apple Watch connection that did not look right, a save that did
+          not look right, a Group Ride room that stopped updating, or a trail route that clearly did not respect how riders
           actually arrive.
         </p>
         <a
@@ -157,8 +157,8 @@
         <details class="faq-item reveal">
           <summary>What devices does TrackItMX support?</summary>
           <p>
-            TrackItMX is centered on iPhone, with Apple Watch companion behavior and CarPlay navigation support where
-            available. Android support is planned for a later release.
+            TrackItMX is made for iPhone, with Apple Watch companion support and CarPlay navigation for supported setups.
+            Android launch coming later.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -193,8 +193,8 @@
         <details class="faq-item reveal">
           <summary>What helps most when reporting a recording issue?</summary>
           <p>
-            Tell us whether the ride was phone-only or watch-linked, whether the app went to the background, what trail
-            or route context mattered, whether service was weak, and what you expected to happen instead of what actually did.
+            Tell us whether the ride was phone-only or connected to Apple Watch, whether the app went to the background,
+            what trail or route context mattered, whether service was poor, and what you expected to happen instead.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -219,31 +219,31 @@
           <h3>The trail distance or route looks wrong</h3>
           <p>
             Confirm that iPhone location permissions are enabled, let the first fix settle before starting a route, and
-            retry after the device has a better location lock if the first read looked weak.
+            retry after the device has a better location lock if the first location looked off.
           </p>
         </article>
         <article class="support-card reveal">
           <span class="label">Ride recording</span>
           <h3>The ride did not save the way you expected</h3>
           <p>
-            Note whether the session was phone-only or watch-linked, whether the app went to the background, and whether
-            the session was paused, interrupted, or restored.
+            Note whether the session was phone-only or connected to Apple Watch, whether the app went to the background,
+            and whether the session was paused, interrupted, or restored.
           </p>
         </article>
         <article class="support-card reveal">
           <span class="label">Apple Watch</span>
-          <h3>The watch looks stale or disconnected</h3>
+          <h3>Apple Watch looks stale or disconnected</h3>
           <p>
             Check that the watch is paired, the watch app is installed, and the phone stays nearby long enough for the
-            bridge to settle if you are using watch-linked ride or live behavior.
+            connection to catch up during a ride.
           </p>
         </article>
         <article class="support-card reveal">
           <span class="label">Group Ride</span>
-          <h3>Live rider presence looks stale or missing</h3>
+          <h3>Rider locations look stale or missing</h3>
           <p>
-            Group Ride depends on permissions and connectivity. If the live source was watch-linked, keeping the phone
-            nearby may help while the room catches back up. Tell us whether the room was in weak service.
+            Group Ride depends on permissions and connectivity. If Apple Watch is part of the ride, keeping the phone
+            nearby may help while the room catches back up. Tell us whether the room was in poor service.
           </p>
         </article>
         <article class="support-card reveal">
@@ -266,8 +266,8 @@
           <span class="label">Backup or restore</span>
           <h3>Restore or recovery is not working</h3>
           <p>
-            Re-enter the recovery details carefully, make sure the device has network access, and mention the restore
-            flow explicitly when you email support if it still fails.
+            Re-enter the recovery details carefully, make sure the device has network access, and tell us you were trying
+            to restore when you email support if it still fails.
           </p>
         </article>
         <article class="support-card reveal">
@@ -276,7 +276,7 @@
           <p>
             Start on the privacy page or email
             <a href="mailto:support@trackitmx.com?subject=TrackItMX%20Privacy%20Request" data-support-link data-support-email data-mail-subject="TrackItMX Privacy Request">support@trackitmx.com</a>
-            and include enough device or ride context for us to identify the request safely.
+            and include enough device or ride context for us to find the right request safely.
           </p>
         </article>
         <article class="support-card reveal">
@@ -306,8 +306,8 @@
         <p class="eyebrow">Privacy and data</p>
         <h2>Need privacy details or request paths?</h2>
         <p>
-          Use the privacy page for location data, ride telemetry, Group Ride presence, optional health signals,
-          analytics context, and request guidance.
+          Use the privacy page for location data, ride telemetry, Group Ride location sharing, optional health signals,
+          app reliability data, and request guidance.
         </p>
         <a class="button button--secondary" href="../privacy/">Open privacy policy</a>
       </div>

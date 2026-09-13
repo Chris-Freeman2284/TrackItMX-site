@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="assets/trackitmx-mark.png">
   <link rel="canonical" href="https://trackitmx.com/">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20260911">
+  <link rel="stylesheet" href="styles.css?v=20260913">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -36,9 +36,9 @@
       "description": "TrackItMX helps off-road riders get to the trail, record rides they trust, review what happened, remember setup context, and stay linked with the crew."
     }
   </script>
-  <script defer src="site-config.js"></script>
-  <script defer src="app.js"></script>
-  <script defer src="analytics-config.js"></script>
+  <script defer src="site-config.js?v=20260913"></script>
+  <script defer src="app.js?v=20260913"></script>
+  <script defer src="analytics-config.js?v=20260913"></script>
 </head>
 <body class="page page--home">
   <div class="site-grit" aria-hidden="true"></div>
@@ -53,7 +53,7 @@
     <nav class="topnav" aria-label="Primary">
       <a href="#features">Features</a>
       <a href="#ride-loop">Ride Loop</a>
-      <a href="#web-links">Web Links</a>
+      <a href="#web-links">Sharing</a>
       <a href="#crew">Crew</a>
       <a href="#faq">FAQ</a>
       <a href="support/">Support</a>
@@ -83,8 +83,8 @@
           <a class="button button--secondary" href="#ride-loop">See how it works</a>
         </div>
         <p class="hero__note">
-          Built for iPhone, with Apple Watch support and CarPlay navigation where available.
-          Android support is planned for a later release.
+          TrackItMX is made for iPhone first, with Apple Watch support and CarPlay navigation for supported setups.
+          Android launch coming later.
         </p>
         <div class="chip-row" aria-label="TrackItMX feature highlights">
           <span>Trail-first navigation</span>
@@ -102,7 +102,7 @@
           <div class="app-preview__header">
             <img src="assets/trackitmx-mark.png" alt="" aria-hidden="true">
             <div>
-              <span class="label">Ride command</span>
+              <span class="label">Ride overview</span>
               <strong>Trail day in one view</strong>
             </div>
           </div>
@@ -197,9 +197,9 @@
           <p>Create or join Group Ride rooms and see where riders are when the room is connected.</p>
         </article>
         <article class="feature-card reveal">
-          <span class="feature-card__tag">Apple stack</span>
-          <h3>Built around the Apple ride stack</h3>
-          <p>iPhone is the core experience, with Apple Watch companion support and CarPlay navigation where available.</p>
+          <span class="feature-card__tag">Devices</span>
+          <h3>iPhone, Watch, and CarPlay</h3>
+          <p>TrackItMX is made for iPhone and connects with Apple Watch and CarPlay on supported setups.</p>
         </article>
         <article class="feature-card reveal">
           <span class="feature-card__tag">Sharing</span>
@@ -268,8 +268,8 @@
         <p class="eyebrow">More than a solo tracker</p>
         <h2>The app, the web, and the garage all point at the same ride.</h2>
         <p>
-          iPhone is the core ride experience. Watch, CarPlay, spectator links, shared ride recaps, and garage context
-          are there to support the same job: make the ride easier to run, understand, and remember.
+          Ride recording, Watch, CarPlay, spectator links, shared ride recaps, and garage notes work together
+          so each ride is easier to follow, understand, and remember.
         </p>
       </div>
       <div class="platform-grid">
@@ -281,7 +281,7 @@
         <article class="platform-card reveal">
           <span class="label">Group Ride</span>
           <strong>Live rooms for riding with a crew.</strong>
-          <p>Create or join rooms, see rider presence, and keep the group picture simple when network conditions allow.</p>
+          <p>Create or join rooms, see rider locations, and keep the group picture simple when network conditions allow.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">Spectator</span>
@@ -291,7 +291,7 @@
         <article class="platform-card reveal">
           <span class="label">Apple Watch</span>
           <strong>Optional companion ride context.</strong>
-          <p>Watch-linked flows can add companion ride behavior and optional health-related signals when the rider grants permission.</p>
+          <p>Apple Watch can add companion ride context and optional health-related signals when the rider grants permission.</p>
         </article>
         <article class="platform-card reveal">
           <span class="label">CarPlay</span>
@@ -308,7 +308,7 @@
 
     <section id="web-links" class="section web-links">
       <div class="section-heading reveal">
-        <p class="eyebrow">Website features</p>
+        <p class="eyebrow">Sharing</p>
         <h2>Links that make sense when not everyone has the app.</h2>
         <p>
           If someone does not have the app, shared links still give them a clean way to follow a live room,
@@ -332,7 +332,7 @@
           <span class="label">Smart links</span>
           <h3>Invites, places, and rides land in the right flow.</h3>
           <p>TrackItMX links can open the app when it is installed, or show a useful web page when the browser is the better path.</p>
-          <a class="button button--secondary" href="support/">Get link help</a>
+          <a class="button button--secondary" href="support/">Link help</a>
         </article>
       </div>
     </section>
@@ -341,9 +341,9 @@
       <div class="trust-panel reveal">
         <div class="trust-panel__copy">
           <p class="eyebrow">Trust and safety</p>
-          <h2>Your ride data should work for you, not become a spam funnel.</h2>
+          <h2>Your ride data should work for your ride.</h2>
           <p>
-            TrackItMX may handle sensitive ride information like location, route traces, telemetry, Group Ride presence,
+            TrackItMX may handle ride information like location, route traces, telemetry, Group Ride location sharing,
             spectator visibility, and optional Watch or health-related signals. Those choices should be clear,
             permission-based, and easy to question.
           </p>
@@ -369,8 +369,8 @@
         <details class="faq-item reveal">
           <summary>Where do I download TrackItMX?</summary>
           <p>
-            Use the Get TrackItMX buttons on this site. Once the public App Store listing is available, those buttons
-            open the TrackItMX App Store page.
+            Use the Get TrackItMX buttons on this site. When the App Store listing is live, those buttons open
+            TrackItMX in the App Store.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -413,8 +413,8 @@
           <summary>What does TrackItMX track?</summary>
           <p>
             Depending on the features and permissions you use, TrackItMX may handle location, route traces, ride telemetry,
-            timestamps, speed, distance, device motion signals, Group Ride presence, optional Watch or health-related
-            signals, app reliability analytics, and support messages.
+            timestamps, speed, distance, device motion signals, Group Ride location sharing, optional Watch or health-related
+            signals, app reliability data, and support messages.
           </p>
         </details>
         <details class="faq-item reveal">
@@ -438,7 +438,7 @@
       <div class="resource-card resource-card--accent reveal">
         <p class="eyebrow">Privacy</p>
         <h2>Want the plain-language data story?</h2>
-        <p>Read how TrackItMX handles location, ride data, spectator visibility, optional health signals, analytics, and requests.</p>
+        <p>Read how TrackItMX handles location, ride data, spectator visibility, optional health signals, app reliability data, and requests.</p>
         <a class="button button--secondary" href="privacy/">Read Privacy</a>
       </div>
       <div class="resource-card reveal">

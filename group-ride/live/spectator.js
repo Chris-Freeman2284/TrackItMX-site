@@ -77,7 +77,7 @@ function bootstrap() {
     showEntry();
     if (els.input) {
       els.input.disabled = true;
-      els.input.placeholder = "Spectator view is not configured";
+      els.input.placeholder = "Spectator map is unavailable";
     }
     const submitButton = els.form?.querySelector('button[type="submit"]');
     if (submitButton) {
@@ -757,7 +757,7 @@ async function fetchPresence(roomId) {
   }
 
   if (!response.ok) {
-    throw new Error("Could not load rider presence.");
+    throw new Error("Could not load rider locations.");
   }
 
   const data = await response.json();
@@ -990,7 +990,7 @@ function renderRiders(riders) {
       <article class="spectator-rider ${isActive ? "spectator-rider--active" : ""}">
         <div class="spectator-rider__header">
           <div>
-            <p class="label">Presence</p>
+            <p class="label">Rider</p>
             <h3>${escapeHtml(rider.displayName)}</h3>
           </div>
           <span class="spectator-badge spectator-badge--${getBadgeTone(rider)}">${escapeHtml(rider.statusLabel)}</span>

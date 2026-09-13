@@ -43,10 +43,37 @@ jobs:
             echo '});'
           } > runtime-config.js
 
+      - name: Prepare public site artifact
+        run: |
+          mkdir -p _site
+          cp -R \
+            404.html \
+            CNAME \
+            analytics-config.js \
+            app.js \
+            apple-app-site-association \
+            assets \
+            group-ride \
+            index.html \
+            join \
+            place \
+            privacy \
+            ride \
+            robots.txt \
+            runtime-config.js \
+            site-config.js \
+            site.webmanifest \
+            sitemap.xml \
+            styles.css \
+            support \
+            terms \
+            _site/
+          touch _site/.nojekyll
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
