@@ -158,7 +158,7 @@ async function openRoom(rawCode) {
   try {
     const room = await resolveActiveRoom(cleanedExact || normalized);
     if (!room) {
-      throw new Error("That room code is not active right now.");
+      throw new Error("That room is not available to spectators right now.");
     }
 
     state.roomId = room.id;
@@ -203,8 +203,8 @@ async function refreshRoom(seedRoom = null) {
 
   try {
     const room = seedRoom ?? await fetchRoomById(state.roomId);
-    if (!room || !isRoomActive(room)) {
-      throw new Error("This room is no longer active.");
+    if (!room || !isPublicActiveRoom(room)) {
+      throw new Error("This room is no longer available to spectators.");
     }
 
     const riders = await fetchPresence(room.id);
@@ -691,7 +691,7 @@ async function resolveActiveRoom(rawCode) {
 
   if (exact) {
     const exactRoom = await fetchRoomById(exact);
-    if (isRoomActive(exactRoom)) {
+    if (isPublicActiveRoom(exactRoom)) {
       return exactRoom;
     }
   }
@@ -709,10 +709,31 @@ async function resolveActiveRoom(rawCode) {
       structuredQuery: {
         from: [{ collectionId: "rooms" }],
         where: {
-          fieldFilter: {
-            field: { fieldPath: "shareCode" },
-            op: "EQUAL",
-            value: { stringValue: normalized }
+          compositeFilter: {
+            op: "AND",
+            filters: [
+              {
+                fieldFilter: {
+                  field: { fieldPath: "shareCode" },
+                  op: "EQUAL",
+                  value: { stringValue: normalized }
+                }
+              },
+              {
+                fieldFilter: {
+                  field: { fieldPath: "visibility" },
+                  op: "EQUAL",
+                  value: { stringValue: "public" }
+                }
+              },
+              {
+                fieldFilter: {
+                  field: { fieldPath: "active" },
+                  op: "EQUAL",
+                  value: { booleanValue: true }
+                }
+              }
+            ]
           }
         },
         limit: 5
@@ -729,7 +750,7 @@ async function resolveActiveRoom(rawCode) {
     .map((row) => row.document)
     .filter(Boolean)
     .map(parseFirestoreDocument)
-    .filter((room) => isRoomActive(room));
+    .filter((room) => isPublicActiveRoom(room));
 
   return rooms[0] ?? null;
 }
@@ -737,7 +758,7 @@ async function resolveActiveRoom(rawCode) {
 async function fetchRoomById(roomId) {
   const response = await authorizedFetch(`${firestoreBase}/rooms/${encodeURIComponent(roomId)}`);
 
-  if (response.status === 404) {
+  if (response.status === 403 || response.status === 404) {
     return null;
   }
 
@@ -1336,7 +1357,15 @@ function getRoomAge(room) {
 }
 
 function isRoomActive(room) {
-  return Boolean(room) && room.active !== false && !isRoomStale(room);
+  return Boolean(room) && room.active === true && !isRoomStale(room);
+}
+
+function isPublicActiveRoom(room) {
+  return isRoomActive(room) && isRoomPublic(room);
+}
+
+function isRoomPublic(room) {
+  return typeof room?.visibility === "string" && room.visibility.trim().toLowerCase() === "public";
 }
 
 function isRoomStale(room) {
