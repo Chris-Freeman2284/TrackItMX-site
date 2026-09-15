@@ -732,13 +732,6 @@ async function resolveActiveRoom(rawCode) {
                   op: "EQUAL",
                   value: { booleanValue: true }
                 }
-              },
-              {
-                fieldFilter: {
-                  field: { fieldPath: "expiresAt" },
-                  op: "GREATER_THAN",
-                  value: { timestampValue: new Date().toISOString() }
-                }
               }
             ]
           }
