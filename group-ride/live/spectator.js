@@ -732,6 +732,13 @@ async function resolveActiveRoom(rawCode) {
                   op: "EQUAL",
                   value: { booleanValue: true }
                 }
+              },
+              {
+                fieldFilter: {
+                  field: { fieldPath: "expiresAt" },
+                  op: "GREATER_THAN",
+                  value: { timestampValue: new Date().toISOString() }
+                }
               }
             ]
           }
@@ -1357,7 +1364,11 @@ function getRoomAge(room) {
 }
 
 function isRoomActive(room) {
-  return Boolean(room) && room.active === true && !isRoomStale(room);
+  return Boolean(room)
+    && room.active === true
+    && hasFutureExpiry(room)
+    && !hasEndMarker(room)
+    && !isRoomStale(room);
 }
 
 function isPublicActiveRoom(room) {
@@ -1366,6 +1377,16 @@ function isPublicActiveRoom(room) {
 
 function isRoomPublic(room) {
   return typeof room?.visibility === "string" && room.visibility.trim().toLowerCase() === "public";
+}
+
+function hasFutureExpiry(room) {
+  return room?.expiresAt instanceof Date
+    && Number.isFinite(room.expiresAt.getTime())
+    && room.expiresAt.getTime() > Date.now();
+}
+
+function hasEndMarker(room) {
+  return room?.endedAt !== undefined && room.endedAt !== null;
 }
 
 function isRoomStale(room) {
