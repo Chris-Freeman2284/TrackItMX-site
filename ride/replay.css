@@ -1,0 +1,17 @@
+.page--ride-viewer .ride-viewer-map-card { display: flex; flex-direction: column; }
+.page--ride-viewer .ride-map { position: relative; inset: auto; min-height: 360px; height: 55vh; flex: 1; }
+.page--ride-viewer .ride-map .leaflet-control-attribution { color: #252525; background: #ffffffdf; }
+.page--ride-viewer .ride-map .leaflet-control-attribution a { color: #125a57; }
+.ride-replay { position: relative; padding: 18px; background: #151512; color: #f0eadb; border-top: 1px solid #ffffff20; }
+.ride-replay[hidden] { display: none; }
+.ride-replay__toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ride-replay button, .ride-replay select { min-height: 44px; border-radius: 14px; border: 1px solid #ffffff30; background: #ffffff0b; color: #f0eadb; padding: 8px 14px; font: inherit; font-weight: 650; cursor: pointer; }
+.ride-replay #replay-play { background: #27d8bc; color: #08241e; border-color: #27d8bc; min-width: 100px; }
+.ride-replay select option { background: #151512; }
+.ride-replay button:focus-visible, .ride-replay select:focus-visible, .ride-replay input:focus-visible { outline: 3px solid #f0eadb; outline-offset: 3px; }
+.ride-replay label { display: flex; align-items: center; gap: 8px; font-size: .88rem; }
+.ride-replay input { display: block; width: 100%; margin: 12px 0 2px; min-height: 32px; accent-color: #27d8bc; cursor: pointer; }
+.ride-replay__time { margin-left: auto; font-variant-numeric: tabular-nums; font-size: .9rem; }
+.ride-replay p { margin: 4px 0 0; font-size: .83rem; color: #f0eadbb3; line-height: 1.5; }
+.ride-replay #replay-status { color: #f0eadb; }
+@media (max-width: 420px) { .ride-replay { padding: 14px; } .ride-replay__time { width: 100%; margin-left: 0; } }

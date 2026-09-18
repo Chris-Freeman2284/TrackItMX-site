@@ -1,3 +1,5 @@
+import { prepareReplay, replayFrame, replaySegments, ReplayClock } from "./replay.js?v=20260918";
+
 const PROJECT_ID = "trackitmx-c5656";
 const AUTH_STORAGE_KEY = "trackitmx_private_ride_auth_v1";
 const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey || "").trim();
@@ -36,7 +38,13 @@ const state = {
   routeLayer: null,
   routeGlowLayer: null,
   markerLayer: null,
-  routeBounds: null
+  routeBounds: null,
+  replay: null,
+  replayClock: null,
+  replayMarker: null,
+  replayTrail: null,
+  replayAnimation: null,
+  replayLastPaint: 0
 };
 
 bootstrap();
@@ -81,11 +89,14 @@ async function openSharedRide(shareID) {
     state.ride = ride;
     renderRide(ride);
 
-    const route = parseRoutePreview(ride.routePreview);
+    const previewRoute = parseRoutePreview(ride.routePreview);
+    const timedRoute = prepareReplay(ride.routeReplay, previewRoute, Number(ride.durationSeconds));
+    const route = timedRoute?.recorded ? timedRoute.points : previewRoute;
     if (route.length >= 2) {
       try {
         await ensureMapReady();
         drawRoute(route, parseHighlights(ride.highlights));
+        setupReplay(ride, route);
       } catch (mapError) {
         showMapNote(mapError instanceof Error ? mapError.message : "Could not draw the map.");
       }
@@ -307,7 +318,8 @@ function drawRoute(route, highlights) {
   state.routeGlowLayer?.remove();
   state.markerLayer?.clearLayers();
 
-  const latLngs = route.map((point) => [point.lat, point.lon]);
+  const timed = prepareReplay(state.ride?.routeReplay, route, Number(state.ride?.durationSeconds));
+  const latLngs = replaySegments(timed?.recorded ? timed.points : route.map(point => ({ ...point, segment: 0 })));
   state.routeGlowLayer = window.L.polyline(latLngs, {
     color: "#070504",
     weight: 11,
@@ -342,7 +354,7 @@ function addEndpoint(point, label, kind) {
     return;
   }
 
-  const marker = window.L.marker([point.lat, point.lon], {
+  const marker = window.L.marker(replayMapCoordinate(point), {
     icon: window.L.divIcon({
       className: "ride-map-marker-shell",
       html: `<span class="ride-map-marker ride-map-marker--${kind}"><span class="ride-map-marker__dot"></span><span class="ride-map-marker__label">${escapeHTML(label)}</span></span>`,
@@ -361,7 +373,7 @@ function addHighlightMarker(highlight) {
 
   const title = highlight.title || "Key moment";
   const subtitle = highlight.subtitle || "";
-  const marker = window.L.marker([highlight.lat, highlight.lon], {
+  const marker = window.L.marker(replayMapCoordinate(highlight), {
     icon: window.L.divIcon({
       className: "ride-map-marker-shell",
       html: `<span class="ride-map-marker ride-map-marker--moment ride-map-marker--${escapeAttribute(highlight.kind || "moment")}"><span class="ride-map-marker__dot"></span><span class="ride-map-marker__label">${escapeHTML(title)}</span></span>`,
@@ -652,6 +664,8 @@ function setLoading(title, summary) {
 }
 
 function renderError(title, summary) {
+  pauseReplay();
+  document.getElementById("ride-replay").hidden = true;
   setText(els.title, title);
   setText(els.summary, summary);
   setText(els.readTitle, "Ride unavailable");
@@ -677,6 +691,88 @@ function renderError(title, summary) {
     `;
   }
 }
+
+function setupReplay(ride, route) {
+  const replay = prepareReplay(ride.routeReplay, route, Number(ride.durationSeconds));
+  if (!replay || !state.map || !window.L) return;
+  state.replay = replay;
+  state.replayClock = new ReplayClock(replay.duration);
+  const panel = document.getElementById("ride-replay");
+  const progress = document.getElementById("replay-progress");
+  panel.hidden = false;
+  progress.max = String(replay.duration);
+  document.getElementById("replay-timing").textContent = replay.recorded
+    ? `Recorded timing · 1× follows the original ride clock. Position is interpolated between shared GPS fixes; gaps remain visible.${replay.truncated ? " Some route sections could not fit in this share." : ""}`
+    : "Estimated preview · This older link has no GPS timestamps. Motion uses the route and total duration; stops and exact pace are unavailable.";
+  state.replayTrail = window.L.polyline([], { color: "#f0eadb", weight: 5, opacity: .9 }).addTo(state.map);
+  state.replayMarker = window.L.circleMarker([replay.points[0].lat, replay.points[0].lon], {
+    radius: 8, color: "#f0eadb", weight: 3, fillColor: "#27d8bc", fillOpacity: 1
+  });
+  document.getElementById("replay-play").onclick = () => {
+    if (state.replayClock.playing) pauseReplay();
+    else { state.replayClock.play(performance.now()); paintReplay(); scheduleReplay(); }
+  };
+  document.getElementById("replay-restart").onclick = () => {
+    pauseReplay(); state.replayClock.seek(0, performance.now()); paintReplay();
+  };
+  document.getElementById("replay-speed").onchange = event => {
+    state.replayClock.setRate(Number(event.target.value), performance.now()); paintReplay();
+  };
+  progress.oninput = event => {
+    const targetTime = Number(event.target.value);
+    pauseReplay(); state.replayClock.seek(targetTime, performance.now()); paintReplay();
+  };
+  paintReplay();
+}
+
+function pauseReplay() {
+  if (state.replayAnimation != null) cancelAnimationFrame(state.replayAnimation);
+  state.replayAnimation = null;
+  state.replayClock?.pause(performance.now());
+  if (state.replay) paintReplay();
+}
+
+function scheduleReplay() {
+  if (state.replayAnimation != null || !state.replayClock?.playing) return;
+  state.replayAnimation = requestAnimationFrame(now => {
+    state.replayAnimation = null;
+    if (now - state.replayLastPaint >= 50) { state.replayLastPaint = now; paintReplay(); }
+    if (state.replayClock?.playing) scheduleReplay();
+  });
+}
+
+function paintReplay() {
+  const replay = state.replay, clock = state.replayClock;
+  if (!replay || !clock) return;
+  const now = performance.now(), time = clock.position(now);
+  if (time >= replay.duration && clock.playing) clock.pause(now);
+  const frame = replayFrame(replay, time);
+  const completed = replay.points.slice(0, frame.index + 1);
+  if (frame.point) completed.push(frame.point);
+  state.replayTrail.setLatLngs(replaySegments(completed));
+  if (frame.point) {
+    state.replayMarker.setLatLng(replayMapCoordinate(frame.point));
+    if (!state.map.hasLayer(state.replayMarker)) state.replayMarker.addTo(state.map);
+  } else state.replayMarker.remove();
+  const play = document.getElementById("replay-play");
+  play.textContent = clock.playing ? "Ⅱ Pause" : time >= replay.duration ? "↺ Replay" : "▶ Play";
+  play.setAttribute("aria-label", clock.playing ? "Pause ride replay" : "Play ride replay");
+  const slider = document.getElementById("replay-progress");
+  slider.value = String(time);
+  slider.setAttribute("aria-valuetext", `${formatDuration(time)} of ${formatDuration(replay.duration)}`);
+  document.getElementById("replay-time").textContent = `${formatDuration(time)} / ${formatDuration(replay.duration)}`;
+  const status = frame.gap ? "GPS gap — position unavailable." : time >= replay.duration ? "Ride complete." : clock.playing ? "Playing" : "Paused";
+  const statusElement = document.getElementById("replay-status");
+  if (statusElement.textContent !== status) statusElement.textContent = status;
+}
+
+function replayMapCoordinate(point) {
+  const center = state.routeBounds?.isValid() ? state.routeBounds.getCenter().lng : point.lon;
+  return [point.lat, point.lon + 360 * Math.round((center - point.lon) / 360)];
+}
+
+document.addEventListener("visibilitychange", () => { if (document.hidden) pauseReplay(); });
+window.addEventListener("pagehide", pauseReplay);
 
 function showMapNote(message) {
   if (!els.mapEmpty) {
