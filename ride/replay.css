@@ -15,3 +15,7 @@
 .ride-replay p { margin: 4px 0 0; font-size: .83rem; color: #f0eadbb3; line-height: 1.5; }
 .ride-replay #replay-status { color: #f0eadb; }
 @media (max-width: 420px) { .ride-replay { padding: 14px; } .ride-replay__time { width: 100%; margin-left: 0; } }
+
+.ride-replay__lap { display: inline-flex; align-items: center; gap: 7px; margin: 6px 0; font-size: .85rem; font-weight: 650; }
+.ride-replay__lap[hidden] { display: none; }
+.ride-replay__lap::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lap-color, #27d8bc); }

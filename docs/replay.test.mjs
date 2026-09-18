@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { prepareReplay, replayFrame, replaySegments, ReplayClock } from '../ride/replay.js';
+import { prepareReplay, replayFrame, replaySegments, replayPieces, visibleReplayPiece, replayLapAt, replayLapColor, ReplayClock } from '../ride/replay.js';
 let checks = 0;
 function check(value) { checks++; assert.ok(value); }
 const raw = {version:1,durationSeconds:100,points:[
@@ -37,4 +37,30 @@ clock.seek(50,5000); clock.play(5000); check(clock.position(6000)===52);
 clock.setRate(7,6000); check(clock.rate===2);
 clock.pause(100000); check(clock.elapsed===100);
 clock.play(101000); check(clock.position(101000)===0);
+const lapped = prepareReplay({...raw,laps:[{number:1,start:0,end:5},{number:2,start:5,end:95}]},[],100);
+const pieces = replayPieces(lapped);
+check(pieces.length === 4);
+check(pieces[0].points.at(-1).t === 5 && pieces[1].points[0].t === 5);
+check(pieces[0].lap === 1 && pieces[1].lap === 2 && pieces.at(-1).lap === null);
+check(replayLapAt(lapped,5) === 2 && replayLapAt(lapped,96) === null);
+check(replayLapColor(1) !== replayLapColor(2));
+check(pieces.every(piece => visibleReplayPiece(piece, replayFrame(lapped,0)).length === 0));
+const halfway = pieces.flatMap(piece => visibleReplayPiece(piece,replayFrame(lapped,4)));
+check(halfway.length === 2 && halfway.at(-1).t === 4);
+check(pieces.flatMap(piece => visibleReplayPiece(piece,replayFrame(lapped,50))).every(p => p.t <= 10));
+check(pieces.every(piece => piece.points.every(p => p.segment === piece.points[0].segment)));
+const gapLap = prepareReplay({...raw,laps:[{number:1,start:0,end:50},{number:2,start:50,end:100}]},[],100);
+check(!replayPieces(gapLap).some(piece => piece.points.some(p => p.t === 50)));
+check(replayLapAt(gapLap,100) === 2);
+check(replayPieces(legacy).every(piece => piece.lap === null));
+check(replayPieces(timeline).every(piece => piece.lap === null));
+for (const laps of [null, [{number:0,start:0,end:2}], [{number:1,start:0,end:101}],
+  [{number:1,start:2,end:2}], [{number:1,start:0,end:NaN}],
+  [{number:1,start:0,end:20},{number:2,start:19,end:30}], Array(257).fill({number:1,start:0,end:1})]) {
+  check(prepareReplay({...raw,laps},[],100).laps.length === 0);
+}
+// Seeking backwards/restarting never leaves a later lap on the map.
+const endFrame = replayFrame(lapped,100), restartFrame = replayFrame(lapped,0);
+check(pieces.flatMap(piece => visibleReplayPiece(piece,endFrame)).length > 0);
+check(pieces.flatMap(piece => visibleReplayPiece(piece,restartFrame)).length === 0);
 console.log(`PASS: ${checks} web replay timing, gap, parsing and playback checks`);

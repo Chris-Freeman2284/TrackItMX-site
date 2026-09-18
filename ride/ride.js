@@ -1,4 +1,4 @@
-import { prepareReplay, replayFrame, replaySegments, ReplayClock } from "./replay.js?v=20260918";
+import { prepareReplay, replayFrame, replaySegments, replayPieces, visibleReplayPiece, replayLapAt, replayLapColor, ReplayClock } from "./replay.js?v=20260918-laps";
 
 const PROJECT_ID = "trackitmx-c5656";
 const AUTH_STORAGE_KEY = "trackitmx_private_ride_auth_v1";
@@ -42,7 +42,8 @@ const state = {
   replay: null,
   replayClock: null,
   replayMarker: null,
-  replayTrail: null,
+  replayTrails: [],
+  replayStarted: false,
   replayAnimation: null,
   replayLastPaint: 0
 };
@@ -704,25 +705,35 @@ function setupReplay(ride, route) {
   document.getElementById("replay-timing").textContent = replay.recorded
     ? `Recorded timing · 1× follows the original ride clock. Position is interpolated between shared GPS fixes; gaps remain visible.${replay.truncated ? " Some route sections could not fit in this share." : ""}`
     : "Estimated preview · This older link has no GPS timestamps. Motion uses the route and total duration; stops and exact pace are unavailable.";
-  state.replayTrail = window.L.polyline([], { color: "#f0eadb", weight: 5, opacity: .9 }).addTo(state.map);
+  state.replayTrails = replayPieces(replay).map(piece => ({ piece,
+    layer: window.L.polyline([], { color: replayLapColor(piece.lap), weight: 5, opacity: .94,
+      lineCap: "round", lineJoin: "round", interactive: false }), paintedUntil: null }));
   state.replayMarker = window.L.circleMarker([replay.points[0].lat, replay.points[0].lon], {
     radius: 8, color: "#f0eadb", weight: 3, fillColor: "#27d8bc", fillOpacity: 1
   });
   document.getElementById("replay-play").onclick = () => {
     if (state.replayClock.playing) pauseReplay();
-    else { state.replayClock.play(performance.now()); paintReplay(); scheduleReplay(); }
+    else { beginReplay(); state.replayClock.play(performance.now()); paintReplay(); scheduleReplay(); }
   };
   document.getElementById("replay-restart").onclick = () => {
-    pauseReplay(); state.replayClock.seek(0, performance.now()); paintReplay();
+    beginReplay(); pauseReplay(); state.replayClock.seek(0, performance.now()); paintReplay();
   };
   document.getElementById("replay-speed").onchange = event => {
     state.replayClock.setRate(Number(event.target.value), performance.now()); paintReplay();
   };
   progress.oninput = event => {
     const targetTime = Number(event.target.value);
-    pauseReplay(); state.replayClock.seek(targetTime, performance.now()); paintReplay();
+    beginReplay(); pauseReplay(); state.replayClock.seek(targetTime, performance.now()); paintReplay();
   };
   paintReplay();
+}
+
+function beginReplay() {
+  if (state.replayStarted) return;
+  state.replayStarted = true;
+  state.routeLayer?.remove();
+  state.routeGlowLayer?.remove();
+  state.markerLayer?.clearLayers();
 }
 
 function pauseReplay() {
@@ -747,10 +758,19 @@ function paintReplay() {
   const now = performance.now(), time = clock.position(now);
   if (time >= replay.duration && clock.playing) clock.pause(now);
   const frame = replayFrame(replay, time);
-  const completed = replay.points.slice(0, frame.index + 1);
-  if (frame.point) completed.push(frame.point);
-  state.replayTrail.setLatLngs(replaySegments(completed));
-  if (frame.point) {
+  const lap = replayLapAt(replay, time);
+  if (state.replayStarted) for (const trail of state.replayTrails) {
+    const until = Math.max(trail.piece.points[0].t, Math.min(time, trail.piece.points.at(-1).t));
+    if (trail.paintedUntil === until) continue;
+    trail.paintedUntil = until;
+    const visible = visibleReplayPiece(trail.piece, frame);
+    if (visible.length) {
+      trail.layer.setLatLngs(replaySegments(visible.map(p => ({...p, lon: replayMapCoordinate(p)[1]}))));
+      if (!state.map.hasLayer(trail.layer)) trail.layer.addTo(state.map);
+    } else trail.layer.remove();
+  }
+  if (state.replayStarted && frame.point) {
+    state.replayMarker.setStyle({fillColor: replayLapColor(lap)});
     state.replayMarker.setLatLng(replayMapCoordinate(frame.point));
     if (!state.map.hasLayer(state.replayMarker)) state.replayMarker.addTo(state.map);
   } else state.replayMarker.remove();
@@ -761,7 +781,12 @@ function paintReplay() {
   slider.value = String(time);
   slider.setAttribute("aria-valuetext", `${formatDuration(time)} of ${formatDuration(replay.duration)}`);
   document.getElementById("replay-time").textContent = `${formatDuration(time)} / ${formatDuration(replay.duration)}`;
-  const status = frame.gap ? "GPS gap — position unavailable." : time >= replay.duration ? "Ride complete." : clock.playing ? "Playing" : "Paused";
+  const status = !state.replayStarted ? "Press Play to watch the trail build from the start."
+    : frame.gap ? "GPS gap — position unavailable." : time >= replay.duration ? "Ride complete." : clock.playing ? "Playing" : "Paused";
+  const lapElement = document.getElementById("replay-lap");
+  lapElement.hidden = !state.replayStarted;
+  lapElement.textContent = lap == null ? "Ride trail" : `Lap ${lap}`;
+  lapElement.style.setProperty("--lap-color", replayLapColor(lap));
   const statusElement = document.getElementById("replay-status");
   if (statusElement.textContent !== status) statusElement.textContent = status;
 }
