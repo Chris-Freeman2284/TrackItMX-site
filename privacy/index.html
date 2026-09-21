@@ -71,7 +71,7 @@
       <div class="page-hero__aside reveal">
         <div class="info-card">
           <span class="label">Last updated</span>
-          <strong>September 10, 2026</strong>
+          <strong>September 21, 2026</strong>
           <p>Review this page whenever TrackItMX changes how ride, watch, sharing, or online features behave.</p>
         </div>
         <div class="info-card">
@@ -88,7 +88,7 @@
         <h2>Built to make ride features work.</h2>
         <p>
           TrackItMX is built to help riders get to the trail, record rides, review sessions, keep setup context, and use
-          online features like Group Ride rooms, spectator links, private shared ride links, backup, and restore when those features are turned on.
+          online features like Group Ride rooms, spectator links, unlisted shared ride links, backup, and restore when those features are turned on.
         </p>
       </article>
 
@@ -139,11 +139,12 @@
 
       <article class="policy-card reveal">
         <span class="label">7. Service providers</span>
-        <h2>Some features rely on Firebase, Apple services, and HealthKit.</h2>
+        <h2>Apple, Firebase, and OpenAI support specific features.</h2>
         <p>
           Firebase services may be used where applicable for authentication, online ride features, live room data,
           sharing, backup, restore, or analytics. Apple platform services may be used where applicable for maps,
           routing, system integrations, and device-level permissions. HealthKit applies where riders choose to connect it.
+          Optional online Coach and Mechanic requests use OpenAI, as described below.
         </p>
       </article>
 
@@ -157,7 +158,58 @@
       </article>
 
       <article class="policy-card reveal">
-        <span class="label">9. Retention</span>
+        <span class="label">9. Optional online AI</span>
+        <h2>You choose whether Coach and Mechanic use online AI.</h2>
+        <p>
+          When online AI is available, you can enable it in Settings &rarr; AI Privacy and Access. With your consent,
+          TrackItMX sends your question, recent conversation, and relevant rider, garage, and ride context to OpenAI
+          through TrackItMX's service. Ride context can include GPS locations and heart-rate data when available.
+          Web searches may use details needed to answer your question.
+        </p>
+        <p>
+          TrackItMX does not keep a separate chat log on its AI gateway. OpenAI states that API content is not used for
+          model training by default. OpenAI may retain content for abuse monitoring, generally for up to 30 days,
+          with exceptions for legal or safety needs; other temporary processing and caching may apply.
+          See <a href="https://developers.openai.com/api/docs/guides/your-data">OpenAI's data controls</a> for details.
+        </p>
+        <p>
+          You can turn online AI off in AI Privacy and Access to stop future requests. Turning it off does not erase
+          requests already processed or remove local conversation history or account backups.
+        </p>
+      </article>
+
+      <article class="policy-card reveal">
+        <span class="label">10. Account backup</span>
+        <h2>Account backups can include your full riding library.</h2>
+        <p>
+          If you use account backup, data sent to Firebase can include recorded rides and GPS samples, saved tracks
+          and trails, garage and rider setup, app settings, Group Ride history, and assistant memory. Ride data can
+          include optional health signals recorded with your permission. Backups are associated with your account
+          so you can restore them after signing in.
+        </p>
+        <p>
+          Local storage and account backups are separate. Removing the app or a local copy does not by itself prove
+          that a cloud copy has been removed. Contact us if you need help accessing or deleting account data.
+        </p>
+      </article>
+
+      <article class="policy-card reveal">
+        <span class="label">11. Unlisted ride links</span>
+        <h2>Anyone with the link can view and replay the shared ride.</h2>
+        <p>
+          Creating an unlisted ride link uploads the selected route, recorded timing when available, lap intervals,
+          selected metrics, and highlights to TrackItMX's sharing service. The link is not posted to a public board,
+          but anyone who receives it can open it and forward it to someone else until it expires or is revoked.
+        </p>
+        <p>
+          Shared rides are snapshots. Later edits to the ride on your device do not automatically change an existing
+          link. Revoking a link stops future access through the service; it cannot recall screenshots or copies
+          someone already saved.
+        </p>
+      </article>
+
+      <article class="policy-card reveal">
+        <span class="label">12. Retention</span>
         <h2>Retention depends on the feature you used.</h2>
         <p>
           Some ride or setup data may remain on-device until you remove it or delete the app. Online data may remain
@@ -180,7 +232,7 @@
         <article class="support-card reveal">
           <span class="label">Sharing visibility</span>
           <h3>Use public or spectator features intentionally</h3>
-          <p>Shared ride results, live room data, spectator links, and private ride links should only show what you choose to make available in that feature.</p>
+          <p>Review the route and details before sharing. Unlisted ride links and spectator links can be forwarded, so share them only with people you want to have access.</p>
         </article>
         <article class="support-card reveal">
           <span class="label">Requests</span>
