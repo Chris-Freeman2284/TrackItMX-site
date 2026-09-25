@@ -1,6 +1,7 @@
 const PROJECT_ID = "trackitmx-c5656";
 const POLL_MS = 3500;
-const STALE_ROOM_SECONDS = 600;
+const STALE_ROOM_SECONDS = 3 * 60 * 60;
+const MAX_ROOM_MS = 24 * 60 * 60 * 1000;
 const AUTH_STORAGE_KEY = "trackitmx_spectator_auth_v1";
 const FIREBASE_WEB_API_KEY = String(window.TRACKITMX_RUNTIME?.firebaseWebApiKey || "").trim();
 const LEAFLET_CSS_URL = new URL("../../assets/vendor/leaflet/leaflet.css", import.meta.url).href;
@@ -1375,7 +1376,9 @@ function isRoomPublic(room) {
 function hasFutureExpiry(room) {
   return room?.expiresAt instanceof Date
     && Number.isFinite(room.expiresAt.getTime())
-    && room.expiresAt.getTime() > Date.now();
+    && room.createdAt instanceof Date
+    && Number.isFinite(room.createdAt.getTime())
+    && Math.min(room.expiresAt.getTime(), room.createdAt.getTime() + MAX_ROOM_MS) > Date.now();
 }
 
 function hasEndMarker(room) {
@@ -1383,8 +1386,9 @@ function hasEndMarker(room) {
 }
 
 function isRoomStale(room) {
-  const roomAge = getRoomAge(room);
-  return roomAge != null && roomAge > STALE_ROOM_SECONDS;
+  const activity = room.lastMemberActivityAt instanceof Date ? room.lastMemberActivityAt : room.createdAt;
+  return !(activity instanceof Date) || !Number.isFinite(activity.getTime())
+    || Date.now() - activity.getTime() >= STALE_ROOM_SECONDS * 1000;
 }
 
 function getFreshness(ageSeconds) {
