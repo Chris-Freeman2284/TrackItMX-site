@@ -21,3 +21,17 @@ test('spectator honors fixed 24 hours, explicit closure, and malformed/expired l
   assert(!active(room({ expiresAt: new Clock(now) })));
   assert(!active(room({ createdAt: null })));
 });
+
+test('expired live viewer returns to entry and stops polling without requesting rider locations', async () => {
+  let left = 0, fetched = 0, message;
+  const state = { roomId: 'expired', loading: false };
+  const start = source.indexOf('async function refreshRoom('), end = source.indexOf('function schedulePoll(', start);
+  const refresh = runInNewContext(source.slice(start, end) + '\nrefreshRoom', {
+    state, isPublicActiveRoom: () => false, fetchRoomById: async () => ({ active: false }),
+    leaveRoom: () => { left++; state.roomId = null; },
+    setStatus: text => { message = text; }, fetchPresence: async () => { fetched++; return []; }
+  });
+  await refresh();
+  assert.equal(left,1); assert.equal(fetched,0); assert.equal(state.roomId,null);
+  assert.match(message,/ended/);
+});

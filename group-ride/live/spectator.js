@@ -205,7 +205,9 @@ async function refreshRoom(seedRoom = null) {
   try {
     const room = seedRoom ?? await fetchRoomById(state.roomId);
     if (!room || !isPublicActiveRoom(room)) {
-      throw new Error("This room is no longer available to spectators.");
+      leaveRoom();
+      setStatus("This group ride has ended or is no longer public. Ask your crew for a fresh link.", "idle");
+      return;
     }
 
     const riders = await fetchPresence(room.id);
